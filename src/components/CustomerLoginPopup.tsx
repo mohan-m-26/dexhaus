@@ -46,10 +46,11 @@ export default function CustomerLoginPopup({ isOpen, onClose, onSuccess }: Custo
 
   const handleGoogleLogin = async () => {
     try {
+      const origin = typeof window !== 'undefined' ? window.location.origin : '';
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${window.location.origin}/checkout`,
+          redirectTo: origin ? `${origin}/` : undefined,
         },
       });
       if (error) throw error;

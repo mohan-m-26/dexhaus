@@ -1,0 +1,249 @@
+import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
+
+export interface Product {
+  id: string;
+  title: string;
+  category: string;
+  categoryKey: string;
+  price: number;
+  originalPrice?: number;
+  image: string;
+  hoverVideo?: string;
+  hoverImage?: string;
+  specs: string;
+  benefit: string;
+  inStock?: boolean;
+  badge?: string;
+}
+
+export interface HeroConfig {
+  badgeText: string;
+  title: string;
+  highlightText: string;
+  subtitle: string;
+  mediaType: 'image' | 'video';
+  imageUrl: string;
+  videoUrl: string;
+  primaryCtaText: string;
+  primaryCtaLink: string;
+  secondaryCtaText: string;
+  secondaryCtaLink: string;
+  bannerAnnouncement: string;
+}
+
+export const INITIAL_HERO_CONFIG: HeroConfig = {
+  badgeText: "SMART SOLUTIONS. BETTER LIVING.",
+  title: "Smart Solutions for a",
+  highlightText: "Better Home.",
+  subtitle: "Curated products that reduce effort, save time, and make everyday living easier.",
+  mediaType: 'image',
+  imageUrl: "/hero-lifestyle.jpg",
+  videoUrl: "/hero-video.mp4",
+  primaryCtaText: "Explore Solutions",
+  primaryCtaLink: "#popular",
+  secondaryCtaText: "View Problem Kits",
+  secondaryCtaLink: "#combos",
+  bannerAnnouncement: "SMART SOLUTIONS. BETTER LIVING. • FREE PAN-INDIA DELIVERY ON ORDERS OVER ₹999",
+};
+
+export const INITIAL_PRODUCTS: Product[] = [
+  {
+    id: "prod-kitchen-1",
+    title: "2-Tier Countertop Spice & Bottle Organizer",
+    category: "Kitchen Solutions",
+    categoryKey: "kitchen",
+    price: 899,
+    originalPrice: 1299,
+    image: "/product-kitchen-organizer.jpg",
+    hoverVideo: "",
+    hoverImage: "",
+    specs: "Matte black steel frame • Double-tier clearance • Non-slip feet",
+    benefit: "Frees up counter surface and keeps everyday cooking essentials within reach.",
+    inStock: true,
+    badge: "Bestseller",
+  },
+  {
+    id: "prod-cleaning-1",
+    title: "Dual-Chamber Hands-Free Flat Mop System",
+    category: "Cleaning Solutions",
+    categoryKey: "cleaning",
+    price: 699,
+    originalPrice: 999,
+    image: "/product-microfiber-mop.jpg",
+    hoverVideo: "/hero-video.mp4",
+    hoverImage: "",
+    specs: "Dual wash & dry chambers • 360° swivel head • 2x Microfiber pads",
+    benefit: "Cleans tile and wood streak-free without dirtying hands or manual wringing.",
+    inStock: true,
+    badge: "Most Practical",
+  },
+  {
+    id: "prod-bathroom-1",
+    title: "Rustproof 3-Tier Corner Shower Caddy",
+    category: "Bathroom Solutions",
+    categoryKey: "bathroom",
+    price: 649,
+    originalPrice: 899,
+    image: "/product-bathroom-rack.jpg",
+    hoverVideo: "",
+    hoverImage: "",
+    specs: "Corrosion-resistant steel • Heavy-duty adhesive mount • Water drainage slots",
+    benefit: "Holds bottles securely without drilling into bathroom tiles or causing rust.",
+    inStock: true,
+  },
+  {
+    id: "prod-storage-1",
+    title: "Reinforced Clear-Window Fabric Storage Box",
+    category: "Storage & Organization",
+    categoryKey: "storage",
+    price: 449,
+    originalPrice: 699,
+    image: "/product-storage-box.jpg",
+    hoverVideo: "",
+    hoverImage: "",
+    specs: "High-density linen-blend fabric • Dual metal zippers • Front clear viewport",
+    benefit: "Protects seasonal garments, quilts, and bed linen while keeping contents identifiable.",
+    inStock: true,
+    badge: "Essential",
+  },
+  {
+    id: "prod-space-1",
+    title: "Under-Sink 2-Tier Sliding Drawer Rack",
+    category: "Space-Saving Solutions",
+    categoryKey: "space-saving",
+    price: 1099,
+    originalPrice: 1599,
+    image: "/product-under-sink.jpg",
+    hoverVideo: "",
+    hoverImage: "",
+    specs: "Steel wire pull-out drawer • Clears vertical plumbing pipes • Modular height",
+    benefit: "Turns awkward, unused under-sink cabinet cavities into structured pull-out storage.",
+    inStock: true,
+  },
+  {
+    id: "prod-convenience-1",
+    title: "Bamboo-Top Cable Concealer & Surge Box",
+    category: "Home Convenience",
+    categoryKey: "convenience",
+    price: 699,
+    originalPrice: 999,
+    image: "/product-cable-box.jpg",
+    hoverVideo: "",
+    hoverImage: "",
+    specs: "Fire-retardant ABS housing • Natural bamboo lid • Side ventilation ports",
+    benefit: "Conceals power strips and tangled cords to protect curious pets and eliminate visual clutter.",
+    inStock: true,
+  },
+  {
+    id: "prod-laundry-1",
+    title: "9-Hole Cascading Wardrobe Space-Saver Hangers",
+    category: "Laundry & Wardrobe",
+    categoryKey: "laundry",
+    price: 499,
+    originalPrice: 799,
+    image: "/product-cascading-hangers.jpg",
+    hoverVideo: "",
+    hoverImage: "",
+    specs: "Pack of 6 cascading hangers • 360° rotating hook • Vertical & horizontal modes",
+    benefit: "Quadruples closet hanging space and keeps shirts crease-free in compact wardrobes.",
+    inStock: true,
+  },
+  {
+    id: "prod-convenience-2",
+    title: "Magnetic Warm-LED Motion Sensor Nightlight",
+    category: "Home Convenience",
+    categoryKey: "convenience",
+    price: 549,
+    originalPrice: 799,
+    image: "/product-motion-sensor-light.jpg",
+    hoverVideo: "",
+    hoverImage: "",
+    specs: "USB rechargeable • Magnetic stick-on strip • Automatic ambient motion detection",
+    benefit: "Provides hands-free night lighting for dark staircases, closets, and hallways.",
+    inStock: true,
+    badge: "Smart Home",
+  }
+];
+
+export const CATEGORY_OPTIONS = [
+  { id: "kitchen", name: "Kitchen Solutions", icon: "🍳" },
+  { id: "cleaning", name: "Cleaning Solutions", icon: "🧹" },
+  { id: "storage", name: "Storage & Organization", icon: "📦" },
+  { id: "bathroom", name: "Bathroom Solutions", icon: "🛁" },
+  { id: "laundry", name: "Laundry & Wardrobe", icon: "👔" },
+  { id: "space-saving", name: "Space-Saving Solutions", icon: "📐" },
+  { id: "convenience", name: "Home Convenience", icon: "💡" },
+];
+
+interface SiteStore {
+  heroConfig: HeroConfig;
+  products: Product[];
+  updateHeroConfig: (config: Partial<HeroConfig>) => void;
+  resetHeroConfig: () => void;
+  addProduct: (product: Omit<Product, 'id'> & { id?: string }) => void;
+  updateProduct: (id: string, product: Partial<Product>) => void;
+  deleteProduct: (id: string) => void;
+  toggleProductStock: (id: string) => void;
+  resetToDefaultProducts: () => void;
+}
+
+export const useSiteStore = create<SiteStore>()(
+  persist(
+    (set) => ({
+      heroConfig: INITIAL_HERO_CONFIG,
+      products: INITIAL_PRODUCTS,
+
+      updateHeroConfig: (newConfig) => {
+        set((state) => ({
+          heroConfig: { ...state.heroConfig, ...newConfig }
+        }));
+      },
+
+      resetHeroConfig: () => {
+        set({ heroConfig: INITIAL_HERO_CONFIG });
+      },
+
+      addProduct: (newProd) => {
+        const id = newProd.id || `prod-custom-${Date.now()}`;
+        const product: Product = {
+          ...newProd,
+          id,
+          inStock: newProd.inStock !== undefined ? newProd.inStock : true,
+        };
+        set((state) => ({
+          products: [product, ...state.products]
+        }));
+      },
+
+      updateProduct: (id, updatedFields) => {
+        set((state) => ({
+          products: state.products.map((p) =>
+            p.id === id ? { ...p, ...updatedFields } : p
+          )
+        }));
+      },
+
+      deleteProduct: (id) => {
+        set((state) => ({
+          products: state.products.filter((p) => p.id !== id)
+        }));
+      },
+
+      toggleProductStock: (id) => {
+        set((state) => ({
+          products: state.products.map((p) =>
+            p.id === id ? { ...p, inStock: !p.inStock } : p
+          )
+        }));
+      },
+
+      resetToDefaultProducts: () => {
+        set({ products: INITIAL_PRODUCTS });
+      }
+    }),
+    {
+      name: 'dexhaus_site_data_v1',
+    }
+  )
+);

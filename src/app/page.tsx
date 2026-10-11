@@ -32,10 +32,12 @@ import { useState, useRef, useMemo } from 'react';
 import { useTheme } from 'next-themes';
 import { useCartStore } from '@/store/cartStore';
 import { useWishlistStore } from '@/store/wishlistStore';
+import { useSiteStore } from '@/store/siteStore';
 import Cart from '@/components/Cart';
 import CustomerLoginPopup from '@/components/CustomerLoginPopup';
 import WishlistDrawer from '@/components/WishlistDrawer';
 import PolicyModal, { PolicyType } from '@/components/PolicyModal';
+import ProductCard from '@/components/ProductCard';
 
 // --- CURATED BRAND CATEGORIES ---
 const CATEGORIES = [
@@ -225,6 +227,7 @@ export default function Storefront() {
   const { theme, setTheme } = useTheme();
   const { openCart, addItem, items: cartItems } = useCartStore();
   const { openWishlist, toggleItem, isInWishlist, items: wishlistItems } = useWishlistStore();
+  const { heroConfig, products: storeProducts } = useSiteStore();
 
   const cartItemCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
   const wishlistItemCount = wishlistItems.length;
@@ -253,9 +256,10 @@ export default function Storefront() {
     }
   };
 
-  // Filtered Products
+  // Filtered Products from Dynamic Store
   const filteredProducts = useMemo(() => {
-    return PRODUCTS.filter((product) => {
+    const list = (storeProducts && storeProducts.length > 0) ? storeProducts : PRODUCTS;
+    return list.filter((product) => {
       const matchesCategory = selectedCategory === 'all' || product.categoryKey === selectedCategory;
       const matchesSearch = 
         product.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -263,7 +267,7 @@ export default function Storefront() {
         product.benefit.toLowerCase().includes(searchQuery.toLowerCase());
       return matchesCategory && matchesSearch;
     });
-  }, [searchQuery, selectedCategory]);
+  }, [storeProducts, searchQuery, selectedCategory]);
 
   const handleTrackOrderSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -438,7 +442,9 @@ export default function Storefront() {
       <header className="bg-[#102F43] text-white text-[11px] sm:text-xs font-medium py-2.5 px-4 tracking-wide border-b border-[#C9A45C]/20">
         <div className="max-w-[1400px] mx-auto flex justify-between items-center">
           <div className="flex items-center gap-2">
-            <span className="text-[#C9A45C] font-bold uppercase tracking-wider text-[10px]">SMART SOLUTIONS. BETTER LIVING.</span>
+            <span className="text-[#C9A45C] font-bold uppercase tracking-wider text-[10px]">
+              {heroConfig?.bannerAnnouncement || 'SMART SOLUTIONS. BETTER LIVING.'}
+            </span>
           </div>
 
           <div className="flex items-center gap-6 text-slate-200">
@@ -630,37 +636,38 @@ export default function Storefront() {
                 
                 {/* Brand Tagline Badge */}
                 <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-[#C9A45C] text-[11px] font-bold tracking-widest uppercase mb-6">
-                  <Sparkles className="w-3.5 h-3.5" /> SMART SOLUTIONS. BETTER LIVING.
+                  <Sparkles className="w-3.5 h-3.5" /> {heroConfig?.badgeText || 'SMART SOLUTIONS. BETTER LIVING.'}
                 </div>
 
-                {/* Exact Main Headline */}
+                {/* Main Headline */}
                 <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold font-serif leading-[1.1] tracking-tight mb-5 text-white">
-                  Smart Solutions for a <span className="text-[#C9A45C] italic">Better Home.</span>
+                  {heroConfig?.title || 'Smart Solutions for a'}{' '}
+                  <span className="text-[#C9A45C] italic">{heroConfig?.highlightText || 'Better Home.'}</span>
                 </h1>
 
-                {/* Exact Supporting Tagline */}
+                {/* Supporting Tagline */}
                 <p className="text-base sm:text-lg text-slate-200 mb-8 font-light leading-relaxed max-w-lg">
-                  Curated products that reduce effort, save time, and make everyday living easier.
+                  {heroConfig?.subtitle || 'Curated products that reduce effort, save time, and make everyday living easier.'}
                 </p>
 
                 {/* CTA Buttons */}
                 <div className="flex flex-wrap items-center gap-4">
                   <Link 
-                    href="#popular" 
+                    href={heroConfig?.primaryCtaLink || '#popular'} 
                     className="group inline-flex items-center gap-2.5 bg-white text-[#102F43] px-7 py-3.5 rounded-full font-bold text-sm shadow-xl hover:bg-[#F8F5ED] hover:scale-[1.02] active:scale-[0.98] transition-all"
                   >
-                    Explore Solutions <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    {heroConfig?.primaryCtaText || 'Explore Solutions'} <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                   </Link>
 
                   <Link 
-                    href="#combos" 
+                    href={heroConfig?.secondaryCtaLink || '#combos'} 
                     className="inline-flex items-center gap-2 px-6 py-3.5 rounded-full font-bold text-sm text-white border border-white/30 hover:bg-white/10 transition-colors"
                   >
-                    View Problem Kits
+                    {heroConfig?.secondaryCtaText || 'View Problem Kits'}
                   </Link>
                 </div>
 
-                {/* Honest Value Indicators (No fake stats or fake ratings) */}
+                {/* Honest Value Indicators */}
                 <div className="mt-10 pt-6 border-t border-white/15 grid grid-cols-2 sm:grid-cols-3 gap-4 text-xs text-slate-300">
                   <div className="flex items-center gap-2">
                     <Check className="w-4 h-4 text-[#C9A45C]" />
@@ -679,22 +686,33 @@ export default function Storefront() {
               </motion.div>
             </div>
 
-            {/* Right Side: High-Resolution Real Lifestyle Image (NO website screenshot, NO summer sale sticker) */}
+            {/* Right Side: High-Resolution Real Lifestyle Media (Video or Photo) */}
             <div className="md:col-span-5 h-[340px] sm:h-[400px] lg:h-[480px] w-full relative flex items-center justify-center">
               <motion.div 
                 initial={{ opacity: 0, scale: 0.95 }} 
                 animate={{ opacity: 1, scale: 1 }} 
                 transition={{ duration: 0.8, delay: 0.2 }}
-                className="relative w-full h-full rounded-[2rem] overflow-hidden shadow-2xl border-4 border-white/10"
+                className="relative w-full h-full rounded-[2rem] overflow-hidden shadow-2xl border-4 border-white/10 bg-slate-900"
               >
-                <Image 
-                  src="/hero-lifestyle.jpg" 
-                  alt="DEXHAUS Thoughtfully Organized Modern Kitchen and Living Space" 
-                  fill 
-                  className="object-cover" 
-                  priority
-                  sizes="(max-width: 768px) 100vw, 45vw"
-                />
+                {heroConfig?.mediaType === 'video' && heroConfig?.videoUrl ? (
+                  <video
+                    src={heroConfig.videoUrl}
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <Image 
+                    src={heroConfig?.imageUrl || "/hero-lifestyle.jpg"} 
+                    alt="DEXHAUS Thoughtfully Organized Modern Kitchen and Living Space" 
+                    fill 
+                    className="object-cover" 
+                    priority
+                    sizes="(max-width: 768px) 100vw, 45vw"
+                  />
+                )}
                 
                 {/* Subtle overlay card highlighting authentic curation */}
                 <div className="absolute bottom-5 left-5 right-5 p-4 rounded-2xl bg-[#102F43]/90 backdrop-blur-md border border-white/15 text-white flex items-center justify-between">
@@ -792,95 +810,26 @@ export default function Storefront() {
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {filteredProducts.map((product) => {
-                const wishlisted = isInWishlist(product.id);
-
-                return (
-                  <motion.div 
-                    key={product.id}
-                    initial={{ opacity: 0, y: 15 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    className="group flex flex-col bg-white dark:bg-slate-900 rounded-[1.75rem] overflow-hidden border border-slate-200/80 dark:border-slate-800 hover:shadow-xl hover:border-slate-300 transition-all duration-300"
-                  >
-                    {/* Consistent Aspect Ratio Image Card with Real Product Visual */}
-                    <div className="relative aspect-square overflow-hidden bg-slate-50 dark:bg-slate-800 m-3 rounded-2xl">
-                      <Image 
-                        src={product.image}
-                        alt={product.title}
-                        fill
-                        className="object-cover group-hover:scale-105 transition-transform duration-500"
-                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                      />
-
-                      {/* Wishlist Button (Genuinely functional) */}
-                      <button 
-                        onClick={() => toggleItem({
-                          id: product.id,
-                          title: product.title,
-                          price: product.price,
-                          image: product.image,
-                          category: product.category
-                        })}
-                        className={`absolute top-3 right-3 z-20 p-2 rounded-full backdrop-blur-md transition-all shadow-sm ${
-                          wishlisted 
-                            ? 'bg-red-50 text-red-500' 
-                            : 'bg-white/80 dark:bg-slate-900/80 text-slate-400 hover:text-red-500'
-                        }`}
-                        title={wishlisted ? "Remove from saved" : "Save for later"}
-                        aria-label="Toggle wishlist"
-                      >
-                        <Heart className={`w-4 h-4 ${wishlisted ? 'fill-current' : ''}`} />
-                      </button>
-
-                      {/* Category Pill on Image */}
-                      <div className="absolute bottom-3 left-3 z-10 bg-[#102F43]/80 backdrop-blur-md text-white text-[10px] font-semibold px-2.5 py-1 rounded-full">
-                        {product.category}
-                      </div>
-                    </div>
-                    
-                    {/* Product Details */}
-                    <div className="p-5 flex flex-col flex-1 pt-2">
-                      <h3 className="font-bold text-slate-900 dark:text-slate-100 text-sm line-clamp-1 mb-1.5" title={product.title}>
-                        {product.title}
-                      </h3>
-                      
-                      {/* Honest Household Benefit Statement */}
-                      <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-2 leading-relaxed mb-3">
-                        {product.benefit}
-                      </p>
-
-                      <div className="text-[11px] text-slate-400 font-mono mb-4 line-clamp-1 border-t border-slate-100 dark:border-slate-800/80 pt-2">
-                        {product.specs}
-                      </div>
-                      
-                      {/* Price and Cart Action */}
-                      <div className="mt-auto flex items-center justify-between pt-2">
-                        <div className="flex flex-col">
-                          <span className="text-[10px] text-slate-400 uppercase tracking-wider font-semibold">Genuine Price</span>
-                          <span className="font-serif font-bold text-lg text-[#102F43] dark:text-white">
-                            ₹{product.price}
-                          </span>
-                        </div>
-                        
-                        <button 
-                          onClick={() => {
-                            addItem({ 
-                              id: product.id, 
-                              title: product.title, 
-                              price: product.price, 
-                              image: product.image 
-                            });
-                          }}
-                          className="bg-[#102F43] dark:bg-[#C9A45C] text-white dark:text-[#102F43] px-4 py-2.5 rounded-xl font-bold text-xs flex items-center gap-1.5 hover:bg-[#183f5a] dark:hover:bg-[#b8924b] transition-all shadow-sm active:scale-95"
-                        >
-                          <ShoppingBag className="w-3.5 h-3.5" /> Add to Cart
-                        </button>
-                      </div>
-                    </div>
-                  </motion.div>
-                );
-              })}
+              {filteredProducts.map((product) => (
+                <ProductCard
+                  key={product.id}
+                  product={product}
+                  wishlisted={isInWishlist(product.id)}
+                  onToggleWishlist={() => toggleItem({
+                    id: product.id,
+                    title: product.title,
+                    price: product.price,
+                    image: product.image,
+                    category: product.category
+                  })}
+                  onAddToCart={() => addItem({
+                    id: product.id,
+                    title: product.title,
+                    price: product.price,
+                    image: product.image
+                  })}
+                />
+              ))}
             </div>
           )}
         </section>

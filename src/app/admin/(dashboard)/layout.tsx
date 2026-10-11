@@ -3,15 +3,27 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { LayoutDashboard, Package, ShoppingCart, LogOut, Sun, Moon } from 'lucide-react';
-import Image from 'next/image';
-import { supabase } from '@/lib/supabase';
+import { 
+  LayoutDashboard, 
+  Package, 
+  PlusCircle, 
+  Sparkles, 
+  ShoppingCart, 
+  LogOut, 
+  Sun, 
+  Moon, 
+  ExternalLink,
+  ShieldCheck,
+  Video
+} from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { motion } from 'framer-motion';
 
 const navigation = [
   { name: 'Dashboard', href: '/admin', icon: LayoutDashboard },
-  { name: 'Products', href: '/admin/products', icon: Package },
+  { name: 'Header & Hero Media', href: '/admin/hero', icon: Sparkles },
+  { name: 'Products Catalog', href: '/admin/products', icon: Package },
+  { name: 'Add Product', href: '/admin/products/new', icon: PlusCircle },
   { name: 'Orders', href: '/admin/orders', icon: ShoppingCart },
 ];
 
@@ -20,118 +32,165 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const router = useRouter();
   const { theme, setTheme } = useTheme();
   const [loading, setLoading] = useState(true);
+  const [adminUser, setAdminUser] = useState('Root Admin');
 
   useEffect(() => {
-    const checkAuth = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        router.push('/admin/login');
-      } else {
-        setLoading(false);
-      }
-    };
-    checkAuth();
-
-    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
-      if (!session) router.push('/admin/login');
-    });
-
-    return () => {
-      authListener.subscription.unsubscribe();
-    };
+    // Check local root authentication
+    const authStatus = localStorage.getItem('dexhaus_admin_auth');
+    const user = localStorage.getItem('dexhaus_admin_user');
+    
+    if (authStatus !== 'authenticated') {
+      router.push('/admin/login');
+    } else {
+      if (user) setAdminUser(user.toUpperCase());
+      setLoading(false);
+    }
   }, [router]);
 
-  const handleLogout = async () => {
-    await supabase.auth.signOut();
+  const handleLogout = () => {
+    localStorage.removeItem('dexhaus_admin_auth');
+    localStorage.removeItem('dexhaus_admin_user');
+    document.cookie = 'dexhaus_admin_auth=; path=/; max-age=0';
     router.push('/admin/login');
   };
 
   if (loading) {
-    return <div className="h-screen w-full flex items-center justify-center bg-background text-foreground">Loading Admin...</div>;
+    return (
+      <div className="h-screen w-full flex flex-col items-center justify-center bg-[#F8F5ED] dark:bg-slate-950 text-[#102F43] dark:text-[#C9A45C] gap-3">
+        <div className="w-10 h-10 border-4 border-[#C9A45C] border-t-transparent rounded-full animate-spin" />
+        <span className="font-serif font-bold text-sm tracking-wider">Loading Dexhaus Admin...</span>
+      </div>
+    );
   }
 
   return (
-    <div className="flex h-screen bg-slate-50 dark:bg-slate-950 font-sans text-slate-900 dark:text-slate-100 transition-colors duration-300">
+    <div className="flex h-screen bg-[#F8F5ED]/50 dark:bg-slate-950 font-sans text-slate-900 dark:text-slate-100 transition-colors duration-300 overflow-hidden">
+      
       {/* Sidebar */}
       <motion.div 
-        initial={{ x: -300 }}
+        initial={{ x: -280 }}
         animate={{ x: 0 }}
-        className="w-64 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 flex flex-col shadow-lg dark:shadow-none z-10"
+        className="w-64 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 flex flex-col shadow-sm z-30"
       >
-        <div className="h-16 flex items-center px-6 border-b border-slate-200 dark:border-slate-800">
-          <Image src="/Dexhaus_logo.png" alt="Dexhaus Logo" width={150} height={32} className="h-8 w-auto dark:invert dark:opacity-80 transition-all" />
+        {/* Brand Header */}
+        <div className="h-20 flex flex-col justify-center px-6 border-b border-slate-200 dark:border-slate-800 bg-[#102F43] text-white">
+          <Link href="/admin" className="flex flex-col">
+            <span className="font-serif font-black tracking-widest text-lg text-white">DEXHAUS</span>
+            <span className="text-[9px] font-bold tracking-widest text-[#C9A45C] uppercase">Admin Control Room</span>
+          </Link>
         </div>
+
+        {/* Navigation Links */}
         <div className="flex-1 overflow-y-auto py-6">
-          <nav className="px-4 space-y-2">
+          <div className="px-4 mb-3">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Main Menu</span>
+          </div>
+          
+          <nav className="px-3 space-y-1.5">
             {navigation.map((item) => {
               const isActive = item.href === '/admin' 
                 ? pathname === '/admin' 
-                : pathname?.startsWith(item.href);
+                : pathname === item.href;
               
               return (
                 <Link
                   key={item.name}
                   href={item.href}
                   className={`
-                    relative group flex items-center px-3 py-3 text-sm font-medium rounded-xl transition-all duration-300
-                    ${isActive ? 'bg-[#0a2540] dark:bg-[#e2c174]/20 text-white dark:text-[#e2c174] shadow-[0_0_15px_rgba(10,37,64,0.3)] dark:shadow-[0_0_15px_rgba(226,193,116,0.2)]' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/50'}
+                    relative group flex items-center px-3.5 py-3 text-xs font-bold rounded-xl transition-all duration-200
+                    ${isActive 
+                      ? 'bg-[#102F43] text-white dark:bg-[#C9A45C] dark:text-[#102F43] shadow-md' 
+                      : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/60 hover:text-slate-900 dark:hover:text-white'}
                   `}
                 >
                   <item.icon
-                    className={`mr-3 h-5 w-5 transition-colors ${isActive ? 'text-white dark:text-[#e2c174]' : 'text-slate-400 group-hover:text-slate-500 dark:group-hover:text-slate-300'}`}
+                    className={`mr-3 h-4 w-4 transition-colors ${isActive ? 'text-[#C9A45C] dark:text-[#102F43]' : 'text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-300'}`}
                   />
                   {item.name}
-                  {isActive && (
-                    <motion.div layoutId="sidebar-active" className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-[#e2c174] rounded-r-full shadow-[0_0_10px_#e2c174]" />
+                  {item.name === 'Header & Hero Media' && (
+                    <span className="ml-auto bg-[#C9A45C]/20 text-[#C9A45C] text-[9px] font-extrabold px-1.5 py-0.5 rounded">
+                      NEW
+                    </span>
                   )}
                 </Link>
               );
             })}
           </nav>
+
+          <div className="px-4 mt-8 mb-3">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Storefront</span>
+          </div>
+
+          <div className="px-3">
+            <Link
+              href="/"
+              target="_blank"
+              className="flex items-center px-3.5 py-2.5 text-xs font-semibold text-slate-600 dark:text-slate-400 rounded-xl hover:bg-amber-50 dark:hover:bg-slate-800/40 hover:text-[#102F43] dark:hover:text-[#C9A45C] transition-colors border border-dashed border-slate-200 dark:border-slate-800"
+            >
+              <ExternalLink className="mr-3 h-4 w-4 text-[#C9A45C]" />
+              View Live Storefront
+            </Link>
+          </div>
         </div>
+
+        {/* Sidebar Footer */}
         <div className="p-4 border-t border-slate-200 dark:border-slate-800 flex flex-col gap-2">
+          <div className="px-3 py-2 bg-slate-50 dark:bg-slate-800/50 rounded-xl flex items-center gap-2 mb-1">
+            <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+            <span className="text-[11px] font-bold text-slate-700 dark:text-slate-300 font-mono">{adminUser} Active</span>
+          </div>
+
           <button 
             onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-            className="flex items-center w-full px-3 py-3 text-sm font-medium text-slate-600 dark:text-slate-400 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800/50 transition-colors"
+            className="flex items-center w-full px-3 py-2.5 text-xs font-semibold text-slate-600 dark:text-slate-400 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800/50 transition-colors"
           >
-            {theme === 'dark' ? <Sun className="mr-3 h-5 w-5 text-yellow-500" /> : <Moon className="mr-3 h-5 w-5 text-slate-400" />}
-            {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
+            {theme === 'dark' ? <Sun className="mr-3 h-4 w-4 text-amber-500" /> : <Moon className="mr-3 h-4 w-4 text-slate-400" />}
+            {theme === 'dark' ? 'Light Appearance' : 'Dark Appearance'}
           </button>
+          
           <button 
             onClick={handleLogout}
-            className="flex items-center w-full px-3 py-3 text-sm font-medium text-red-600 dark:text-red-400 rounded-xl hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors"
+            className="flex items-center w-full px-3 py-2.5 text-xs font-bold text-red-600 dark:text-red-400 rounded-xl hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors"
           >
-            <LogOut className="mr-3 h-5 w-5 opacity-80" />
+            <LogOut className="mr-3 h-4 w-4" />
             Sign Out
           </button>
         </div>
       </motion.div>
 
-      {/* Main Content */}
+      {/* Main Content Area */}
       <div className="flex-1 flex flex-col overflow-hidden relative">
-        {/* Subtle glow background */}
-        <div className="absolute top-0 left-1/4 w-96 h-96 bg-[#e2c174]/10 dark:bg-[#e2c174]/5 rounded-full blur-[100px] pointer-events-none -z-10" />
-        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-[#0a2540]/10 dark:bg-[#0a2540]/20 rounded-full blur-[100px] pointer-events-none -z-10" />
+        
+        {/* Top Header */}
+        <header className="h-16 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between px-8 sticky top-0 z-20 shadow-sm">
+          <div className="flex items-center gap-3">
+            <ShieldCheck className="w-5 h-5 text-[#C9A45C]" />
+            <h1 className="text-base font-bold font-serif text-[#102F43] dark:text-white">
+              Dexhaus Integrated Store Management
+            </h1>
+          </div>
 
-        <header className="h-20 bg-white/50 dark:bg-slate-900/50 backdrop-blur-md border-b border-slate-200/50 dark:border-slate-800/50 flex items-center justify-between px-10 sticky top-0 z-20">
-          <h1 className="text-2xl font-bold font-serif text-[#112a46] dark:text-slate-100 drop-shadow-sm">Admin Control Room</h1>
           <div className="flex items-center gap-4">
-            <span className="text-sm font-medium text-slate-500 dark:text-slate-400">Admin Status: <span className="text-green-500 font-bold drop-shadow-[0_0_5px_rgba(34,197,94,0.4)]">Online</span></span>
-            <div className="h-10 w-10 rounded-full bg-gradient-to-tr from-[#0a2540] to-[#112a46] dark:from-[#e2c174] dark:to-[#b39556] flex items-center justify-center text-white dark:text-slate-900 font-bold shadow-lg cursor-pointer hover:scale-105 transition-transform">
-              A
-            </div>
+            <span className="text-xs text-slate-500 hidden sm:inline">
+              Store Sync: <strong className="text-emerald-600 dark:text-emerald-400">Real-Time Active</strong>
+            </span>
+            <Link 
+              href="/" 
+              className="text-xs font-bold px-3 py-1.5 bg-[#102F43] text-white dark:bg-[#C9A45C] dark:text-[#102F43] rounded-lg hover:opacity-90 flex items-center gap-1.5"
+            >
+              Live Preview <ExternalLink className="w-3 h-3" />
+            </Link>
           </div>
         </header>
-        <main className="flex-1 overflow-x-hidden overflow-y-auto p-10">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4 }}
-          >
+
+        {/* Scrollable Content Body */}
+        <main className="flex-1 overflow-x-hidden overflow-y-auto p-6 sm:p-8">
+          <div className="max-w-7xl mx-auto">
             {children}
-          </motion.div>
+          </div>
         </main>
       </div>
+
     </div>
   );
 }
