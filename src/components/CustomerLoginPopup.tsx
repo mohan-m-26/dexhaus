@@ -83,14 +83,14 @@ export default function CustomerLoginPopup({ isOpen, onClose, onSuccess }: Custo
             </button>
 
             <div className="text-center mb-8 pt-4">
-              <div className="w-16 h-16 bg-blue-50 dark:bg-blue-900/30 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <ShieldCheck className="w-8 h-8 text-[#112a46] dark:text-[#e2c174]" />
+              <div className="w-16 h-16 bg-[#F8F5ED] dark:bg-slate-900 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-amber-100 dark:border-slate-800">
+                <ShieldCheck className="w-8 h-8 text-[#102F43] dark:text-[#C9A45C]" />
               </div>
-              <h2 className="text-2xl font-bold font-serif text-[#112a46] dark:text-white mb-2">
+              <h2 className="text-2xl font-bold font-serif text-[#102F43] dark:text-white mb-2">
                 {isLogin ? 'Welcome Back' : 'Create Account'}
               </h2>
               <p className="text-sm text-slate-500 dark:text-slate-400">
-                Please verify your identity to proceed with checkout. This ensures a safe delivery!
+                Sign in to manage your saved items, view order history, and enjoy seamless checkout.
               </p>
             </div>
 
@@ -129,7 +129,7 @@ export default function CustomerLoginPopup({ isOpen, onClose, onSuccess }: Custo
                   placeholder="Email Address"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full pl-12 pr-4 py-3.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl focus:outline-none focus:border-[#112a46] dark:focus:border-[#e2c174] transition-colors dark:text-white"
+                  className="w-full pl-12 pr-4 py-3.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl focus:outline-none focus:border-[#102F43] dark:focus:border-[#C9A45C] transition-colors dark:text-white"
                 />
               </div>
               <div className="relative">
@@ -140,14 +140,14 @@ export default function CustomerLoginPopup({ isOpen, onClose, onSuccess }: Custo
                   placeholder="Password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pl-12 pr-4 py-3.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl focus:outline-none focus:border-[#112a46] dark:focus:border-[#e2c174] transition-colors dark:text-white"
+                  className="w-full pl-12 pr-4 py-3.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl focus:outline-none focus:border-[#102F43] dark:focus:border-[#C9A45C] transition-colors dark:text-white"
                 />
               </div>
 
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-[#0a2540] dark:bg-[#e2c174] text-white dark:text-[#0a2540] py-4 rounded-xl font-bold flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-[0.98] transition-transform shadow-lg disabled:opacity-70 mt-2"
+                className="w-full bg-[#102F43] dark:bg-[#C9A45C] text-white dark:text-[#102F43] py-4 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-[#183f5a] dark:hover:bg-[#b8924b] transition-all shadow-lg disabled:opacity-70 mt-2"
               >
                 {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : (isLogin ? 'SECURE LOGIN' : 'CREATE ACCOUNT')}
               </button>
@@ -158,7 +158,7 @@ export default function CustomerLoginPopup({ isOpen, onClose, onSuccess }: Custo
               <button
                 type="button"
                 onClick={() => setIsLogin(!isLogin)}
-                className="font-bold text-[#112a46] dark:text-[#e2c174] hover:underline"
+                className="font-bold text-[#102F43] dark:text-[#C9A45C] hover:underline"
               >
                 {isLogin ? 'Sign up' : 'Log in'}
               </button>

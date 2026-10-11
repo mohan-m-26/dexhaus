@@ -7,20 +7,21 @@ import CustomCursor from "@/components/CustomCursor";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Dexhaus | Premium Smart Home Solutions",
-  description: "Curated products that reduce effort, save time, and make everyday living effortlessly premium.",
-  keywords: ["smart home", "home organization", "kitchen gadgets", "premium home accessories"],
+  metadataBase: new URL('https://dexhaus.com'),
+  title: "DEXHAUS | Smart Solutions for a Better Home",
+  description: "Curated products that reduce effort, save time, and make everyday living easier. SMART SOLUTIONS. BETTER LIVING.",
+  keywords: ["smart home solutions", "home organization", "practical home solutions", "space-saving storage", "Dexhaus"],
   openGraph: {
-    title: "Dexhaus | Premium Smart Home Solutions",
-    description: "Curated products that reduce effort, save time, and make everyday living effortlessly premium.",
+    title: "DEXHAUS | Smart Solutions for a Better Home",
+    description: "Curated products that reduce effort, save time, and make everyday living easier.",
     url: "https://dexhaus.com",
-    siteName: "Dexhaus",
+    siteName: "DEXHAUS",
     images: [
       {
-        url: "/hero-image.jpeg", // Replace with a real high-res OG image later
+        url: "/hero-lifestyle.jpg",
         width: 1200,
         height: 630,
-        alt: "Dexhaus Smart Home Solutions",
+        alt: "DEXHAUS Smart Solutions for a Better Home",
       },
     ],
     locale: "en_US",
@@ -28,9 +29,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Dexhaus | Premium Smart Home Solutions",
-    description: "Curated products that reduce effort, save time, and make everyday living effortlessly premium.",
-    images: ["/hero-image.jpeg"],
+    title: "DEXHAUS | Smart Solutions for a Better Home",
+    description: "Curated products that reduce effort, save time, and make everyday living easier.",
+    images: ["/hero-lifestyle.jpg"],
   },
 };
 

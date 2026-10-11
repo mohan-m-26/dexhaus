@@ -62,9 +62,9 @@ export default function Cart() {
             className="fixed inset-y-0 right-0 w-full max-w-md bg-white dark:bg-slate-950 shadow-2xl z-[101] flex flex-col border-l border-slate-200 dark:border-slate-800"
           >
             {/* Header */}
-            <div className="flex items-center justify-between p-6 border-b border-slate-100 dark:border-slate-900">
-              <h2 className="text-xl font-bold font-serif text-[#112a46] dark:text-white flex items-center gap-2">
-                <ShoppingBag className="w-5 h-5 text-[#e2c174]" />
+            <div className="flex items-center justify-between p-6 border-b border-slate-100 dark:border-slate-900 bg-[#F8F5ED]/30 dark:bg-slate-900/40">
+              <h2 className="text-xl font-bold font-serif text-[#102F43] dark:text-white flex items-center gap-2">
+                <ShoppingBag className="w-5 h-5 text-[#C9A45C]" />
                 Your Cart
               </h2>
               <button
@@ -81,7 +81,7 @@ export default function Cart() {
                 <div className="flex flex-col items-center justify-center h-full text-slate-400 space-y-4">
                   <ShoppingBag className="w-16 h-16 opacity-20" />
                   <p>Your cart is empty.</p>
-                  <button onClick={closeCart} className="text-[#b39556] font-bold hover:underline">
+                  <button onClick={closeCart} className="text-[#C9A45C] font-bold hover:underline">
                     Continue Shopping
                   </button>
                 </div>
@@ -104,7 +104,7 @@ export default function Cart() {
                           <X className="w-4 h-4" />
                         </button>
                       </div>
-                      <div className="font-serif font-bold text-[#112a46] dark:text-[#e2c174] mt-1">
+                      <div className="font-serif font-bold text-[#102F43] dark:text-[#C9A45C] mt-1">
                         ₹{item.price}
                       </div>
                       <div className="flex items-center gap-3 mt-auto">
@@ -133,17 +133,19 @@ export default function Cart() {
                 </div>
                 <div className="flex justify-between text-slate-500 dark:text-slate-400 mb-6 text-sm">
                   <span>Shipping</span>
-                  <span className="text-green-600 dark:text-green-500 font-semibold">Free</span>
+                  <span className="text-emerald-700 dark:text-emerald-400 font-semibold">
+                    {getTotal() >= 999 ? 'Free' : '₹79'}
+                  </span>
                 </div>
-                <div className="flex justify-between font-serif font-bold text-2xl text-[#112a46] dark:text-white mb-6">
+                <div className="flex justify-between font-serif font-bold text-2xl text-[#102F43] dark:text-white mb-6">
                   <span>Total</span>
-                  <span>₹{getTotal()}</span>
+                  <span>₹{getTotal() >= 999 ? getTotal() : getTotal() + 79}</span>
                 </div>
                 
                 <button
                   onClick={handleCheckoutClick}
                   disabled={isCheckingOut}
-                  className="w-full bg-[#0a2540] dark:bg-[#e2c174] text-white dark:text-[#0a2540] py-4 rounded-xl font-bold flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-[0.98] transition-transform shadow-lg disabled:opacity-70 disabled:hover:scale-100"
+                  className="w-full bg-[#102F43] dark:bg-[#C9A45C] text-white dark:text-[#102F43] py-4 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-[#183f5a] dark:hover:bg-[#b8924b] transition-all shadow-lg disabled:opacity-70"
                 >
                   {isCheckingOut ? 'PROCESSING...' : 'PROCEED TO CHECKOUT'} <ArrowRight className="w-4 h-4" />
                 </button>
