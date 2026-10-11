@@ -165,16 +165,6 @@ export default function CustomerLoginPopup({ isOpen, onClose, onSuccess }: Custo
                 {isLogin ? 'Sign up' : 'Log in'}
               </button>
             </div>
-
-            <div className="mt-6 pt-4 border-t border-slate-100 dark:border-slate-800 text-center">
-              <Link
-                href="/admin"
-                onClick={onClose}
-                className="text-xs text-slate-400 hover:text-[#102F43] dark:hover:text-[#C9A45C] font-semibold transition-colors inline-flex items-center gap-1"
-              >
-                <span>Staff / Store Admin Portal</span> &rarr;
-              </Link>
-            </div>
           </motion.div>
         </div>
       )}

@@ -432,13 +432,6 @@ export default function Storefront() {
                 >
                   <User className="w-4 h-4 text-[#C9A45C]"/> Customer Account
                 </button>
-                <Link
-                  href="/admin"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="w-full py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 text-xs font-bold flex justify-center items-center gap-2 text-slate-500 hover:text-[#102F43] dark:hover:text-[#C9A45C]"
-                >
-                  Admin Control Room &rarr;
-                </Link>
               </div>
             </motion.div>
           </>
@@ -1200,9 +1193,6 @@ export default function Storefront() {
               <button onClick={() => setActivePolicy('returns')} className="hover:text-white transition-colors">
                 Returns
               </button>
-              <Link href="/admin" className="text-slate-400 hover:text-[#C9A45C] transition-colors font-semibold flex items-center gap-1">
-                Admin Portal
-              </Link>
             </div>
           </div>
 

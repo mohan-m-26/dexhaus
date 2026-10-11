@@ -1,8 +1,7 @@
 'use client';
 
-import Image from 'next/image';
 import Link from 'next/link';
-import { Lock, User, ArrowLeft, ArrowRight, ShieldCheck, KeyRound, Sparkles } from 'lucide-react';
+import { Lock, User, ArrowLeft, ArrowRight, ShieldCheck, Sparkles } from 'lucide-react';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
@@ -37,14 +36,8 @@ export default function AdminLogin() {
       }, 400);
     } else {
       setLoading(false);
-      setError('Invalid root credentials. Use username: admin and password: dexhaus2026');
+      setError('Invalid username or password.');
     }
-  };
-
-  const handleFillDemo = () => {
-    setUsername('admin');
-    setPassword('dexhaus2026');
-    setError('');
   };
 
   return (
@@ -70,35 +63,29 @@ export default function AdminLogin() {
         {/* Center Copy */}
         <div className="relative z-10 max-w-lg text-white">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-[#C9A45C] text-xs font-bold uppercase tracking-wider mb-6">
-            <Sparkles className="w-3.5 h-3.5" /> Dexhaus Master Control
+            <Sparkles className="w-3.5 h-3.5" /> Dexhaus Control Center
           </div>
           
           <h1 className="text-4xl 2xl:text-5xl font-bold leading-tight font-serif tracking-tight">
-            Single Root Admin <br />
+            Storefront Management <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#C9A45C] to-[#e8d5a8]">
-              Control Center
+              Portal
             </span>
           </h1>
 
           <p className="mt-6 text-base text-slate-300 font-light leading-relaxed border-l-2 border-[#C9A45C] pl-5">
-            Manage starting header videos &amp; photos, curate new products with hover video previews, and organize category catalogs with instant live-store sync.
+            Authorized administrative access for managing products, header media, and store catalog operations.
           </p>
 
-          <div className="mt-8 grid grid-cols-2 gap-4 text-xs text-slate-300">
-            <div className="flex items-center gap-2">
-              <ShieldCheck className="w-4 h-4 text-[#C9A45C]" />
-              <span>Direct Root Access</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <KeyRound className="w-4 h-4 text-[#C9A45C]" />
-              <span>Zero-Setup Auth</span>
-            </div>
+          <div className="mt-8 flex items-center gap-2 text-xs text-slate-300">
+            <ShieldCheck className="w-4 h-4 text-[#C9A45C]" />
+            <span>Secure Encrypted Session</span>
           </div>
         </div>
 
         {/* Bottom Note */}
         <div className="relative z-10 text-xs text-slate-400">
-          Dexhaus Storefront Management Engine v2.0 • Integrated Architecture
+          Dexhaus Storefront Management Engine v2.0
         </div>
       </div>
 
@@ -127,26 +114,11 @@ export default function AdminLogin() {
                 <ShieldCheck className="w-6 h-6" />
               </div>
               <h2 className="text-3xl font-bold font-serif text-[#102F43] dark:text-white">
-                Admin Root Sign In
+                Admin Sign In
               </h2>
               <p className="text-sm text-slate-500 dark:text-slate-400 mt-2">
-                Enter your master credentials to access the Dexhaus management dashboard.
+                Enter your credentials to access the Dexhaus management dashboard.
               </p>
-            </div>
-
-            {/* Quick Helper Credentials Card */}
-            <div className="mb-6 p-4 rounded-2xl bg-[#F8F5ED] dark:bg-slate-800/80 border border-[#C9A45C]/30 flex items-center justify-between text-xs">
-              <div>
-                <span className="font-bold text-[#102F43] dark:text-[#C9A45C] block">Master Root Credentials:</span>
-                <span className="text-slate-600 dark:text-slate-300 font-mono">User: <strong>admin</strong> | Pass: <strong>dexhaus2026</strong></span>
-              </div>
-              <button
-                type="button"
-                onClick={handleFillDemo}
-                className="px-3 py-1.5 rounded-lg bg-[#102F43] text-white dark:bg-[#C9A45C] dark:text-[#102F43] font-bold text-[11px] hover:opacity-90 transition-opacity"
-              >
-                Auto Fill
-              </button>
             </div>
 
             {/* Error Message */}
@@ -173,7 +145,7 @@ export default function AdminLogin() {
                     required
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
-                    placeholder="admin"
+                    placeholder="Enter username"
                     className="w-full pl-11 pr-4 py-3 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl text-sm focus:outline-none focus:border-[#102F43] dark:focus:border-[#C9A45C] dark:text-white"
                   />
                 </div>
@@ -181,7 +153,7 @@ export default function AdminLogin() {
 
               <div>
                 <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5 uppercase tracking-wider">
-                  Root Password
+                  Password
                 </label>
                 <div className="relative">
                   <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
@@ -202,7 +174,7 @@ export default function AdminLogin() {
                 className="w-full bg-[#102F43] dark:bg-[#C9A45C] text-white dark:text-[#102F43] py-3.5 rounded-xl font-bold text-sm flex items-center justify-center gap-2 hover:bg-[#183f5a] dark:hover:bg-[#b8924b] transition-all shadow-lg active:scale-[0.99] disabled:opacity-70 mt-6"
               >
                 {loading ? 'Authenticating...' : (
-                  <>ENTER ADMIN PORTAL <ArrowRight className="w-4 h-4" /></>
+                  <>SIGN IN <ArrowRight className="w-4 h-4" /></>
                 )}
               </button>
             </form>
