@@ -1,14 +1,19 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { useCartStore } from '@/store/cartStore';
-import { ChevronLeft, ShieldCheck, CreditCard, Truck, MapPin, Phone, Loader2 } from 'lucide-react';
+import { ChevronLeft, ShieldCheck, CreditCard, Truck, MapPin, Phone, Loader2, Sparkles, CheckCircle2 } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { supabase } from '@/lib/supabase';
 
 export default function CheckoutPage() {
-  const { items, getTotal } = useCartStore();
+  const router = useRouter();
+  const { items, getTotal, clearCart } = useCartStore();
   const [loading, setLoading] = useState(false);
+  const [currentUser, setCurrentUser] = useState<any>(null);
+  const [profileLoaded, setProfileLoaded] = useState(false);
 
   // Form State
   const [formData, setFormData] = useState({
@@ -21,6 +26,66 @@ export default function CheckoutPage() {
     pincode: '',
   });
 
+  // Pre-fill profile from Supabase and localStorage on mount
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session?.user) {
+          const user = session.user;
+          setCurrentUser(user);
+
+          // 1. Check local cache
+          const cached = localStorage.getItem(`dexhaus_profile_${user.id}`);
+          let profile = cached ? JSON.parse(cached) : null;
+
+          // 2. Fetch fresh from Supabase
+          try {
+            const { data: dbProfile } = await supabase
+              .from('profiles')
+              .select('*')
+              .eq('id', user.id)
+              .single();
+
+            if (dbProfile) profile = dbProfile;
+          } catch (e) {}
+
+          if (profile) {
+            const rawName = profile.full_name || user.user_metadata?.full_name || user.user_metadata?.name || '';
+            const names = rawName.trim().split(' ');
+            const first = names[0] || '';
+            const last = names.slice(1).join(' ') || '';
+
+            setFormData({
+              firstName: first,
+              lastName: last,
+              phone: profile.phone || '',
+              address: profile.address_line || '',
+              city: profile.city || '',
+              state: profile.state || '',
+              pincode: profile.pincode || '',
+            });
+            if (profile.address_line || profile.phone) {
+              setProfileLoaded(true);
+            }
+          } else if (user.user_metadata?.name || user.user_metadata?.full_name) {
+            const rawName = user.user_metadata?.full_name || user.user_metadata?.name || '';
+            const names = rawName.trim().split(' ');
+            setFormData(prev => ({
+              ...prev,
+              firstName: names[0] || '',
+              lastName: names.slice(1).join(' ') || '',
+            }));
+          }
+        }
+      } catch (e) {
+        console.warn('Error loading checkout profile:', e);
+      }
+    };
+
+    fetchUserProfile();
+  }, []);
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -30,17 +95,83 @@ export default function CheckoutPage() {
     setLoading(true);
 
     try {
-      // Pass both items and customer data to our backend checkout API
+      const orderId = `DX-${Date.now().toString().slice(-4)}${Math.floor(10 + Math.random() * 90)}`;
+      const fullName = `${formData.firstName} ${formData.lastName}`.trim();
+      const customerEmail = currentUser?.email || 'guest@dexhaus.in';
+
+      const orderRecord = {
+        id: orderId,
+        order_id: orderId,
+        customer_name: fullName,
+        customer_email: customerEmail,
+        phone: formData.phone,
+        address: `${formData.address}, ${formData.city}, ${formData.state} - ${formData.pincode}`,
+        address_line: formData.address,
+        city: formData.city,
+        state: formData.state,
+        pincode: formData.pincode,
+        items: items.map(i => ({ id: i.id, title: i.title, price: i.price, quantity: i.quantity, image: i.image })),
+        total_amount: getTotal(),
+        status: 'Processing',
+        created_at: new Date().toISOString(),
+      };
+
+      // 1. Save to Supabase 'orders' table
+      try {
+        await supabase.from('orders').insert([{
+          customer_email: customerEmail,
+          total_amount: getTotal(),
+          status: 'Processing',
+          stripe_session_id: orderId,
+        }]);
+      } catch (err) {
+        console.warn('Supabase orders save notice:', err);
+      }
+
+      // 2. Dual persistence to localStorage orders
+      try {
+        const existingOrders = JSON.parse(localStorage.getItem('dexhaus_orders') || '[]');
+        localStorage.setItem('dexhaus_orders', JSON.stringify([orderRecord, ...existingOrders]));
+        localStorage.setItem('dexhaus_last_order', JSON.stringify(orderRecord));
+      } catch (e) {}
+
+      // 3. Update customer profile in Supabase & localStorage with entered delivery details
+      if (currentUser?.id) {
+        const updatedProfile = {
+          full_name: fullName,
+          phone: formData.phone,
+          address_line: formData.address,
+          city: formData.city,
+          state: formData.state,
+          pincode: formData.pincode,
+        };
+        localStorage.setItem(`dexhaus_profile_${currentUser.id}`, JSON.stringify(updatedProfile));
+        try {
+          await supabase.from('profiles').upsert({
+            id: currentUser.id,
+            email: currentUser.email,
+            ...updatedProfile,
+            updated_at: new Date().toISOString(),
+          });
+        } catch (e) {}
+      }
+
+      // 4. Pass items and customer data to checkout API
       const res = await fetch('/api/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ items, customerDetails: formData }),
+        body: JSON.stringify({ items, customerDetails: formData, orderId }),
       });
       const data = await res.json();
-      
-      // If Stripe returns a URL, go there. Otherwise (simulation mode), go to success.
-      if (data.url) {
+
+      // Clear cart
+      clearCart();
+
+      // If Stripe returns an external payment URL, redirect there. Otherwise, redirect to order confirmation.
+      if (data.url && !data.url.includes('/success')) {
         window.location.href = data.url;
+      } else {
+        router.push(`/success?order_id=${orderId}`);
       }
     } catch (error) {
       console.error("Checkout error", error);
@@ -84,9 +215,16 @@ export default function CheckoutPage() {
             
             {/* Shipping Address Section */}
             <div className="bg-white dark:bg-slate-900 p-6 sm:p-8 rounded-[2rem] shadow-sm border border-slate-100 dark:border-slate-800">
-              <h2 className="text-xl font-bold font-serif text-[#112a46] dark:text-white mb-6 flex items-center gap-2">
-                <MapPin className="w-5 h-5 text-[#e2c174]" /> Shipping Details
-              </h2>
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-xl font-bold font-serif text-[#112a46] dark:text-white flex items-center gap-2">
+                  <MapPin className="w-5 h-5 text-[#e2c174]" /> Shipping Details
+                </h2>
+                {profileLoaded && (
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 text-xs font-semibold border border-emerald-200 dark:border-emerald-800/60">
+                    <CheckCircle2 className="w-3.5 h-3.5" /> Saved Address Loaded
+                  </span>
+                )}
+              </div>
               
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                 <input required type="text" name="firstName" placeholder="First Name" value={formData.firstName} onChange={handleInputChange} className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 focus:outline-none focus:border-[#e2c174]" />

@@ -337,10 +337,47 @@ export default function Storefront() {
     });
   }, [storeProducts, searchQuery, selectedCategory]);
 
-  const handleTrackOrderSubmit = (e: React.FormEvent) => {
+  const handleTrackOrderSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!trackOrderId.trim()) return;
-    setTrackOrderResult(`Order #${trackOrderId.trim().toUpperCase()} is being prepared for dispatch. Estimated delivery is 3-5 business days. A tracking notification will be delivered via SMS/Email once handed to our courier partner.`);
+    const cleanId = trackOrderId.trim().toUpperCase();
+    if (!cleanId) return;
+
+    // 1. Check local storage orders first
+    let foundOrder: any = null;
+    try {
+      const localStr = localStorage.getItem('dexhaus_orders');
+      if (localStr) {
+        const list = JSON.parse(localStr);
+        foundOrder = list.find((o: any) => 
+          (o.order_id && o.order_id.toUpperCase() === cleanId) || 
+          (o.id && o.id.toString().toUpperCase() === cleanId) ||
+          (o.phone && o.phone.includes(cleanId))
+        );
+      }
+    } catch (e) {}
+
+    // 2. Query Supabase orders table
+    if (!foundOrder) {
+      try {
+        const { data } = await supabase
+          .from('orders')
+          .select('*')
+          .or(`stripe_session_id.eq.${cleanId},customer_email.eq.${cleanId.toLowerCase()}`)
+          .limit(1);
+        if (data && data.length > 0) {
+          foundOrder = data[0];
+        }
+      } catch (e) {}
+    }
+
+    if (foundOrder) {
+      const status = foundOrder.status || 'Processing';
+      const customer = foundOrder.customer_name || 'Dexhaus Customer';
+      const dest = foundOrder.city ? `${foundOrder.city}${foundOrder.state ? `, ${foundOrder.state}` : ''}` : 'your registered address';
+      setTrackOrderResult(`Order #${cleanId} for ${customer} is verified: ${status.toUpperCase()}. Destination: ${dest}. Estimated pan-India delivery: 3 to 5 business days.`);
+    } else {
+      setTrackOrderResult(`Order #${cleanId} is confirmed and in our fulfillment queue. Estimated dispatch: within 24-48 hours. A live tracking SMS/email will be delivered once handed to our courier partner.`);
+    }
   };
 
   const handleNewsletterSubmit = async (e: React.FormEvent) => {

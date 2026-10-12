@@ -8,11 +8,14 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || 'dummy_key', {
 
 export async function POST(req: Request) {
   try {
-    const { items } = await req.json();
+    const { items, orderId } = await req.json();
 
     if (!items || items.length === 0) {
       return new NextResponse("No items in cart", { status: 400 });
     }
+
+    // Determine active site origin
+    const origin = req.headers.get('origin') || process.env.NEXT_PUBLIC_SITE_URL || 'https://dexhaus-gray.vercel.app';
 
     // In a real app with real Stripe keys, you create a Stripe Checkout Session
     if (process.env.STRIPE_SECRET_KEY) {
@@ -21,7 +24,7 @@ export async function POST(req: Request) {
           currency: 'inr',
           product_data: {
             name: item.title,
-            images: [item.image.startsWith('http') ? item.image : `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}${item.image}`],
+            images: [item.image.startsWith('http') ? item.image : `${origin}${item.image}`],
           },
           unit_amount: item.price * 100, // Stripe expects amounts in the smallest currency unit (paise)
         },
@@ -31,15 +34,14 @@ export async function POST(req: Request) {
       const session = await stripe.checkout.sessions.create({
         line_items,
         mode: 'payment',
-        success_url: `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/success?session_id={CHECKOUT_SESSION_ID}`,
-        cancel_url: `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}`,
+        success_url: `${origin}/success?session_id={CHECKOUT_SESSION_ID}&order_id=${orderId || ''}`,
+        cancel_url: `${origin}`,
       });
 
       return NextResponse.json({ url: session.url });
     } else {
-      // Dummy response for prototyping without a Stripe Key
-      console.log("No STRIPE_SECRET_KEY found. Simulating checkout.");
-      return NextResponse.json({ url: '/success?simulated=true' });
+      // Direct simulation mode
+      return NextResponse.json({ url: `/success?order_id=${orderId || 'DX-CONFIRMED'}&simulated=true` });
     }
 
   } catch (error: any) {
