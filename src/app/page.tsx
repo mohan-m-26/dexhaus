@@ -28,13 +28,15 @@ import {
   Check
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useState, useRef, useMemo } from 'react';
+import { useState, useRef, useMemo, useEffect } from 'react';
 import { useTheme } from 'next-themes';
 import { useCartStore } from '@/store/cartStore';
 import { useWishlistStore } from '@/store/wishlistStore';
 import { useSiteStore } from '@/store/siteStore';
+import { supabase } from '@/lib/supabase';
 import Cart from '@/components/Cart';
 import CustomerLoginPopup from '@/components/CustomerLoginPopup';
+import CustomerProfileModal, { CustomerProfileData } from '@/components/CustomerProfileModal';
 import WishlistDrawer from '@/components/WishlistDrawer';
 import PolicyModal, { PolicyType } from '@/components/PolicyModal';
 import ProductCard from '@/components/ProductCard';
@@ -232,7 +234,10 @@ export default function Storefront() {
   const cartItemCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
   const wishlistItemCount = wishlistItems.length;
 
+  const [currentUser, setCurrentUser] = useState<any>(null);
+  const [customerProfile, setCustomerProfile] = useState<CustomerProfileData | null>(null);
   const [showAuthPopup, setShowAuthPopup] = useState(false);
+  const [showProfileModal, setShowProfileModal] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activePolicy, setActivePolicy] = useState<PolicyType>(null);
   const [showTrackOrderModal, setShowTrackOrderModal] = useState(false);
@@ -246,6 +251,69 @@ export default function Storefront() {
   // Newsletter State
   const [newsletterEmail, setNewsletterEmail] = useState('');
   const [newsletterSubscribed, setNewsletterSubscribed] = useState(false);
+  const [newsletterLoading, setNewsletterLoading] = useState(false);
+
+  // Authenticate customer on mount and listen to changes
+  useEffect(() => {
+    const initAuth = async () => {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session?.user) {
+          setCurrentUser(session.user);
+          loadCustomerProfile(session.user);
+        }
+      } catch (e) {}
+    };
+
+    initAuth();
+
+    const { data: authListener } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (session?.user) {
+        setCurrentUser(session.user);
+        loadCustomerProfile(session.user);
+      } else {
+        setCurrentUser(null);
+        setCustomerProfile(null);
+      }
+    });
+
+    return () => {
+      authListener.subscription.unsubscribe();
+    };
+  }, []);
+
+  const loadCustomerProfile = async (user: any) => {
+    // 1. Instant local cache check
+    const cached = localStorage.getItem(`dexhaus_profile_${user.id}`);
+    if (cached) {
+      try {
+        setCustomerProfile(JSON.parse(cached));
+      } catch (e) {}
+    }
+
+    // 2. Fresh fetch from Supabase
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', user.id)
+        .single();
+
+      if (data && !error) {
+        setCustomerProfile(data);
+        localStorage.setItem(`dexhaus_profile_${user.id}`, JSON.stringify(data));
+      }
+    } catch (e) {}
+  };
+
+  const handleCustomerSignOut = async () => {
+    try {
+      await supabase.auth.signOut();
+    } catch (e) {}
+    setCurrentUser(null);
+    setCustomerProfile(null);
+    setShowProfileModal(false);
+  };
 
   // Carousel Ref
   const combosRef = useRef<HTMLDivElement>(null);
@@ -275,10 +343,25 @@ export default function Storefront() {
     setTrackOrderResult(`Order #${trackOrderId.trim().toUpperCase()} is being prepared for dispatch. Estimated delivery is 3-5 business days. A tracking notification will be delivered via SMS/Email once handed to our courier partner.`);
   };
 
-  const handleNewsletterSubmit = (e: React.FormEvent) => {
+  const handleNewsletterSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newsletterEmail.trim()) return;
+    const email = newsletterEmail.trim();
+    if (!email) return;
+
+    setNewsletterLoading(true);
+
+    // Save locally
+    localStorage.setItem('dexhaus_newsletter_email', email);
     setNewsletterSubscribed(true);
+
+    // Persist to Supabase newsletter_subscribers table
+    try {
+      await supabase.from('newsletter_subscribers').insert([{ email }]);
+    } catch (err) {
+      console.warn('Newsletter stored locally; ensure SQL table is created in Supabase.');
+    } finally {
+      setNewsletterLoading(false);
+    }
   };
 
   return (
@@ -288,7 +371,24 @@ export default function Storefront() {
       <CustomerLoginPopup 
         isOpen={showAuthPopup} 
         onClose={() => setShowAuthPopup(false)} 
-        onSuccess={() => setShowAuthPopup(false)}
+        onSuccess={(user) => {
+          setShowAuthPopup(false);
+          if (user) {
+            setCurrentUser(user);
+            loadCustomerProfile(user);
+            setShowProfileModal(true);
+          }
+        }}
+      />
+
+      {/* Customer Profile & Address Modal */}
+      <CustomerProfileModal
+        isOpen={showProfileModal}
+        onClose={() => setShowProfileModal(false)}
+        user={currentUser}
+        onSignOut={handleCustomerSignOut}
+        onProfileUpdated={(updated) => setCustomerProfile(updated)}
+        onOpenTrackOrder={() => setShowTrackOrderModal(true)}
       />
 
       {/* Wishlist Drawer */}
@@ -426,12 +526,22 @@ export default function Storefront() {
               </div>
 
               <div className="mt-auto p-6 border-t border-slate-100 dark:border-slate-900 space-y-3">
-                <button 
-                  onClick={() => { setMobileMenuOpen(false); setShowAuthPopup(true); }} 
-                  className="w-full py-3 rounded-xl bg-slate-100 dark:bg-slate-800 text-sm font-bold flex justify-center items-center gap-2 text-[#102F43] dark:text-white"
-                >
-                  <User className="w-4 h-4 text-[#C9A45C]"/> Customer Account
-                </button>
+                {currentUser ? (
+                  <button 
+                    onClick={() => { setMobileMenuOpen(false); setShowProfileModal(true); }} 
+                    className="w-full py-3 rounded-xl bg-[#102F43] text-white dark:bg-[#C9A45C] dark:text-[#102F43] text-xs font-bold flex justify-center items-center gap-2 shadow-sm"
+                  >
+                    <User className="w-4 h-4 text-[#C9A45C] dark:text-[#102F43]"/>
+                    <span className="truncate">{customerProfile?.full_name || currentUser.email || 'My Account Profile'}</span>
+                  </button>
+                ) : (
+                  <button 
+                    onClick={() => { setMobileMenuOpen(false); setShowAuthPopup(true); }} 
+                    className="w-full py-3 rounded-xl bg-slate-100 dark:bg-slate-800 text-sm font-bold flex justify-center items-center gap-2 text-[#102F43] dark:text-white"
+                  >
+                    <User className="w-4 h-4 text-[#C9A45C]"/> Sign In / Register
+                  </button>
+                )}
               </div>
             </motion.div>
           </>
@@ -529,15 +639,35 @@ export default function Storefront() {
               <span className="text-[10px] font-medium hidden sm:block">Theme</span>
             </button>
 
-            {/* Account Trigger */}
-            <button 
-              onClick={() => setShowAuthPopup(true)}
-              className="flex flex-col items-center gap-1 text-slate-600 dark:text-slate-300 hover:text-[#102F43] dark:hover:text-[#C9A45C] transition-colors"
-              title="Customer Login / Account"
-            >
-              <User className="w-5 h-5" />
-              <span className="text-[10px] font-medium hidden sm:block">Account</span>
-            </button>
+            {/* Account / Customer Profile Trigger */}
+            {currentUser ? (
+              <button 
+                onClick={() => setShowProfileModal(true)}
+                className="flex flex-col items-center gap-1 text-[#102F43] dark:text-[#C9A45C] hover:opacity-80 transition-opacity"
+                title="Customer Profile & Shipping Address"
+              >
+                <div className="relative">
+                  <div className="w-5 h-5 rounded-full bg-[#102F43] dark:bg-[#C9A45C] text-white dark:text-[#102F43] text-[10px] font-bold flex items-center justify-center font-serif shadow-sm">
+                    {customerProfile?.full_name 
+                      ? customerProfile.full_name.charAt(0).toUpperCase() 
+                      : (currentUser.email ? currentUser.email.charAt(0).toUpperCase() : 'U')}
+                  </div>
+                  <span className="absolute -bottom-0.5 -right-0.5 w-1.5 h-1.5 rounded-full bg-emerald-500 border border-white dark:border-slate-900" />
+                </div>
+                <span className="text-[10px] font-bold max-w-[55px] truncate hidden sm:block">
+                  {customerProfile?.full_name ? customerProfile.full_name.split(' ')[0] : 'Profile'}
+                </span>
+              </button>
+            ) : (
+              <button 
+                onClick={() => setShowAuthPopup(true)}
+                className="flex flex-col items-center gap-1 text-slate-600 dark:text-slate-300 hover:text-[#102F43] dark:hover:text-[#C9A45C] transition-colors"
+                title="Customer Login / Account"
+              >
+                <User className="w-5 h-5" />
+                <span className="text-[10px] font-medium hidden sm:block">Account</span>
+              </button>
+            )}
             
             {/* Wishlist Trigger */}
             <button 
@@ -730,11 +860,11 @@ export default function Storefront() {
 
         {/* 7 BRAND SOLUTION CATEGORIES */}
         <section id="categories" className="py-4">
-          <div className="text-center max-w-2xl mx-auto mb-8">
+          <div className="text-center max-w-2xl mx-auto mb-8 px-4">
             <span className="text-xs font-bold text-[#C9A45C] uppercase tracking-widest block mb-2">
-              Browse by Room & Need
+              Browse by Room &amp; Need
             </span>
-            <h2 className="text-2xl sm:text-3xl font-serif font-bold text-[#102F43] dark:text-white">
+            <h2 className="text-2xl sm:text-3xl font-serif font-bold text-[#102F43] dark:text-white leading-tight">
               What do you want to solve today?
             </h2>
             <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-2">
@@ -742,7 +872,7 @@ export default function Storefront() {
             </p>
           </div>
 
-          <div className="flex flex-wrap justify-center items-center gap-3 sm:gap-4">
+          <div className="grid grid-cols-2 sm:flex sm:flex-wrap sm:justify-center gap-2.5 sm:gap-3.5 max-w-5xl mx-auto px-2 sm:px-0">
             {CATEGORIES.map((cat) => {
               const isActive = selectedCategory === cat.id;
               return (
@@ -753,14 +883,14 @@ export default function Storefront() {
                     const el = document.getElementById('popular');
                     if (el) el.scrollIntoView({ behavior: 'smooth' });
                   }}
-                  className={`flex items-center gap-2.5 px-4 sm:px-5 py-2.5 sm:py-3 rounded-full text-xs sm:text-sm font-semibold transition-all duration-300 shadow-sm border ${
+                  className={`flex items-center justify-center sm:justify-start gap-2 px-3 sm:px-5 py-3 sm:py-3.5 rounded-2xl text-xs sm:text-sm font-semibold transition-all duration-200 shadow-sm border ${
                     isActive 
                       ? 'bg-[#102F43] text-white border-[#102F43] shadow-md dark:bg-[#C9A45C] dark:text-[#102F43] dark:border-[#C9A45C]'
                       : 'bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 border-slate-200/80 dark:border-slate-800 hover:border-[#C9A45C] hover:-translate-y-0.5'
                   }`}
                 >
-                  <span className="text-base">{cat.icon}</span>
-                  <span>{cat.name}</span>
+                  <span className="text-base flex-shrink-0">{cat.icon}</span>
+                  <span className="truncate text-center sm:text-left">{cat.name}</span>
                 </button>
               );
             })}
@@ -992,21 +1122,21 @@ export default function Storefront() {
         </section>
 
         {/* NEWSLETTER / STAY IN THE LOOP */}
-        <section className="py-4">
-          <div className="bg-white dark:bg-slate-900 rounded-[2.5rem] p-8 sm:p-12 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col md:flex-row items-center justify-between gap-8">
-            <div className="max-w-md">
-              <div className="inline-flex p-3 rounded-2xl bg-[#F8F5ED] dark:bg-slate-800 text-[#102F43] dark:text-[#C9A45C] mb-4">
+        <section className="py-6 max-w-4xl mx-auto px-2 sm:px-0">
+          <div className="bg-white dark:bg-slate-900 rounded-3xl sm:rounded-[2.5rem] p-6 sm:p-10 lg:p-12 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col md:flex-row items-center justify-between gap-6 sm:gap-8">
+            <div className="max-w-md text-center md:text-left">
+              <div className="inline-flex p-3 rounded-2xl bg-[#F8F5ED] dark:bg-slate-800 text-[#102F43] dark:text-[#C9A45C] mb-3">
                 <Mail className="w-6 h-6" />
               </div>
-              <h3 className="text-2xl font-serif font-bold text-[#102F43] dark:text-white mb-2">
+              <h3 className="text-xl sm:text-2xl font-serif font-bold text-[#102F43] dark:text-white mb-2">
                 Stay in the Loop
               </h3>
               <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
-                Receive new solution releases, organization tips, and seasonal kit updates. No spam, ever.
+                Receive new practical solution releases, organization tips, and seasonal kit updates. No spam, ever.
               </p>
             </div>
 
-            <div className="w-full md:w-auto md:min-w-[380px]">
+            <div className="w-full md:w-auto md:min-w-[340px]">
               {newsletterSubscribed ? (
                 <div className="p-4 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-xs text-emerald-800 dark:text-emerald-300 flex items-center gap-2">
                   <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
@@ -1014,23 +1144,24 @@ export default function Storefront() {
                 </div>
               ) : (
                 <form onSubmit={handleNewsletterSubmit} className="space-y-2">
-                  <div className="relative">
+                  <div className="relative flex items-center">
                     <input 
                       type="email" 
                       required
                       placeholder="Enter your email address" 
                       value={newsletterEmail}
                       onChange={(e) => setNewsletterEmail(e.target.value)}
-                      className="w-full bg-[#F8F5ED] dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-full py-3.5 pl-5 pr-28 text-xs focus:outline-none focus:border-[#C9A45C]"
+                      className="w-full bg-[#F8F5ED] dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-full py-3.5 pl-4 pr-28 text-xs focus:outline-none focus:border-[#C9A45C]"
                     />
                     <button 
                       type="submit"
-                      className="absolute right-1.5 top-1.5 bottom-1.5 bg-[#102F43] text-white px-5 rounded-full font-bold text-xs hover:bg-[#183f5a] transition-colors"
+                      disabled={newsletterLoading}
+                      className="absolute right-1.5 top-1.5 bottom-1.5 bg-[#102F43] dark:bg-[#C9A45C] text-white dark:text-[#102F43] px-5 rounded-full font-bold text-xs hover:opacity-90 transition-opacity disabled:opacity-70"
                     >
-                      Subscribe
+                      {newsletterLoading ? 'Saving...' : 'Subscribe'}
                     </button>
                   </div>
-                  <p className="text-[10px] text-slate-400 flex items-center gap-1 pl-3">
+                  <p className="text-[10px] text-slate-400 flex items-center justify-center md:justify-start gap-1 pl-2">
                     <ShieldCheck className="w-3 h-3 text-emerald-600" /> We respect your privacy. Unsubscribe anytime.
                   </p>
                 </form>

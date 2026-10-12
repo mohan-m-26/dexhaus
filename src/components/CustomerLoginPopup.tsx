@@ -9,7 +9,7 @@ import { supabase } from '@/lib/supabase';
 interface CustomerLoginPopupProps {
   isOpen: boolean;
   onClose: () => void;
-  onSuccess: () => void;
+  onSuccess: (user?: any) => void;
 }
 
 export default function CustomerLoginPopup({ isOpen, onClose, onSuccess }: CustomerLoginPopupProps) {
@@ -26,20 +26,28 @@ export default function CustomerLoginPopup({ isOpen, onClose, onSuccess }: Custo
 
     try {
       if (isLogin) {
-        const { error } = await supabase.auth.signInWithPassword({ email, password });
+        const { data, error } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
         if (error) throw error;
+        onSuccess(data?.user);
       } else {
-        const { error } = await supabase.auth.signUp({ 
-          email, 
+        const { data, error } = await supabase.auth.signUp({ 
+          email: email.trim(), 
           password,
-          // Customers don't need email confirmation for this demo flow, assuming it's disabled
         });
         if (error) throw error;
+        if (!data?.session) {
+          setError('Account created! Please check your email to confirm, or if email confirmation is turned off in Supabase, click Log in below.');
+          setLoading(false);
+          return;
+        }
+        onSuccess(data?.user);
       }
-      
-      onSuccess();
     } catch (err: any) {
-      setError(err.message);
+      if (err.message?.toLowerCase().includes('email not confirmed')) {
+        setError('Email not confirmed. Tip: Disable "Confirm email" in Supabase Auth settings to allow instant customer sign in.');
+      } else {
+        setError(err.message || 'Authentication error.');
+      }
     } finally {
       setLoading(false);
     }
