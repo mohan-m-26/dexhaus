@@ -1104,53 +1104,125 @@ export default function Storefront() {
         </section>
 
         {/* WHY DEXHAUS SECTION (AUTHENTIC CURATION, RESEARCH & SELECTION) */}
-        <section id="why-dexhaus" className="py-8 scroll-mt-24">
-          <div className="bg-[#102F43] text-white rounded-[2.5rem] p-8 sm:p-14 lg:p-16 border border-[#102F43] shadow-2xl relative overflow-hidden">
+        <section id="why-dexhaus" className="py-10 sm:py-14 scroll-mt-24">
+          <div className="relative bg-[#102F43] text-white rounded-[2rem] sm:rounded-[2.5rem] p-8 sm:p-12 lg:p-16 border border-white/10 shadow-2xl overflow-hidden">
             
-            <div className="max-w-3xl mb-12">
-              <span className="text-xs font-bold text-[#C9A45C] uppercase tracking-widest block mb-2">
-                Our Curation Standard
-              </span>
-              <h2 className="text-3xl sm:text-4xl font-serif font-bold mb-4">
-                Why Dexhaus?
-              </h2>
-              <p className="text-base text-slate-300 leading-relaxed font-light">
-                You shouldn&apos;t have to sift through endless low-quality generic listings to find what works. We identify specific friction points in Indian households and select practical, dimension-accurate products that solve them.
-              </p>
+            {/* Subtle Ambient Glow Matching Hero Banner */}
+            <div className="absolute top-0 right-0 w-full h-full overflow-hidden pointer-events-none">
+              <div className="absolute -top-[15%] -right-[10%] w-[550px] h-[550px] bg-[#C9A45C]/12 rounded-full blur-[100px]" />
+              <div className="absolute -bottom-[15%] -left-[10%] w-[450px] h-[450px] bg-sky-500/10 rounded-full blur-[90px]" />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              
-              <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6">
-                <span className="text-2xl font-serif font-bold text-[#C9A45C] block mb-2">01</span>
-                <h4 className="text-lg font-bold font-serif mb-2 text-white">Household Friction</h4>
-                <p className="text-xs text-slate-300 leading-relaxed">
-                  We look for everyday domestic frustrations: unorganized kitchen counters, awkward cabinet plumbing cavities, and wire clutter.
+            <div className="relative z-10">
+              {/* Section Introduction */}
+              <div className="max-w-3xl mb-10 sm:mb-14">
+                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-[#C9A45C] text-[11px] font-bold tracking-widest uppercase mb-4 sm:mb-5">
+                  <Sparkles className="w-3.5 h-3.5" /> YOUR HOME SOLUTIONS DESTINATION
+                </div>
+
+                <h2 className="text-3xl sm:text-4xl lg:text-5xl font-serif font-bold text-white mb-5 tracking-tight leading-[1.15]">
+                  Why Dexhaus?
+                </h2>
+
+                <p className="text-sm sm:text-base text-slate-200/90 leading-relaxed font-light">
+                  Your destination for smart home solutions. We bring practical, carefully researched products together in one place, helping you discover smarter ways to manage everyday household tasks. From kitchen organization and effortless cleaning to space-saving storage and everyday convenience, we make finding useful home solutions easier.
                 </p>
               </div>
 
-              <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6">
-                <span className="text-2xl font-serif font-bold text-[#C9A45C] block mb-2">02</span>
-                <h4 className="text-lg font-bold font-serif mb-2 text-white">Practical Utility</h4>
-                <p className="text-xs text-slate-300 leading-relaxed">
-                  Every product must fit standard kitchen and bathroom dimensions without requiring destructive drilling or permanent damage to rental tiles.
-                </p>
+              {/* Four Feature Cards */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6 mb-12 sm:mb-14">
+                
+                {/* 01 — We Identify Problems */}
+                <div className="group bg-white/[0.04] hover:bg-white/[0.07] backdrop-blur-sm border border-white/10 hover:border-[#C9A45C]/40 rounded-2xl sm:rounded-3xl p-6 sm:p-7 flex flex-col justify-between transition-all duration-300 hover:-translate-y-1 shadow-lg">
+                  <div>
+                    <div className="flex items-center justify-between mb-4 sm:mb-5">
+                      <span className="text-2xl sm:text-3xl font-serif font-bold text-[#C9A45C] tracking-tight">
+                        01
+                      </span>
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#C9A45C]/50 group-hover:bg-[#C9A45C] transition-colors" />
+                    </div>
+                    <h3 className="text-lg sm:text-xl font-serif font-bold text-white mb-2.5 tracking-tight">
+                      We Identify Problems
+                    </h3>
+                    <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-light">
+                      We focus on everyday household challenges such as cluttered kitchens, limited storage, cleaning effort and wasted space.
+                    </p>
+                  </div>
+                </div>
+
+                {/* 02 — We Research Products */}
+                <div className="group bg-white/[0.04] hover:bg-white/[0.07] backdrop-blur-sm border border-white/10 hover:border-[#C9A45C]/40 rounded-2xl sm:rounded-3xl p-6 sm:p-7 flex flex-col justify-between transition-all duration-300 hover:-translate-y-1 shadow-lg">
+                  <div>
+                    <div className="flex items-center justify-between mb-4 sm:mb-5">
+                      <span className="text-2xl sm:text-3xl font-serif font-bold text-[#C9A45C] tracking-tight">
+                        02
+                      </span>
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#C9A45C]/50 group-hover:bg-[#C9A45C] transition-colors" />
+                    </div>
+                    <h3 className="text-lg sm:text-xl font-serif font-bold text-white mb-2.5 tracking-tight">
+                      We Research Products
+                    </h3>
+                    <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-light">
+                      We compare available options, features, usability, pricing and relevant customer feedback before selecting products.
+                    </p>
+                  </div>
+                </div>
+
+                {/* 03 — We Curate Solutions */}
+                <div className="group bg-white/[0.04] hover:bg-white/[0.07] backdrop-blur-sm border border-white/10 hover:border-[#C9A45C]/40 rounded-2xl sm:rounded-3xl p-6 sm:p-7 flex flex-col justify-between transition-all duration-300 hover:-translate-y-1 shadow-lg">
+                  <div>
+                    <div className="flex items-center justify-between mb-4 sm:mb-5">
+                      <span className="text-2xl sm:text-3xl font-serif font-bold text-[#C9A45C] tracking-tight">
+                        03
+                      </span>
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#C9A45C]/50 group-hover:bg-[#C9A45C] transition-colors" />
+                    </div>
+                    <h3 className="text-lg sm:text-xl font-serif font-bold text-white mb-2.5 tracking-tight">
+                      We Curate Solutions
+                    </h3>
+                    <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-light">
+                      We focus on practical products that can reduce effort, save time, improve organization and make better use of space.
+                    </p>
+                  </div>
+                </div>
+
+                {/* 04 — We Make Choices Easier */}
+                <div className="group bg-white/[0.04] hover:bg-white/[0.07] backdrop-blur-sm border border-white/10 hover:border-[#C9A45C]/40 rounded-2xl sm:rounded-3xl p-6 sm:p-7 flex flex-col justify-between transition-all duration-300 hover:-translate-y-1 shadow-lg">
+                  <div>
+                    <div className="flex items-center justify-between mb-4 sm:mb-5">
+                      <span className="text-2xl sm:text-3xl font-serif font-bold text-[#C9A45C] tracking-tight">
+                        04
+                      </span>
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#C9A45C]/50 group-hover:bg-[#C9A45C] transition-colors" />
+                    </div>
+                    <h3 className="text-lg sm:text-xl font-serif font-bold text-white mb-2.5 tracking-tight">
+                      We Make Choices Easier
+                    </h3>
+                    <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-light">
+                      We present product benefits, important details and pricing clearly, helping customers choose with greater confidence.
+                    </p>
+                  </div>
+                </div>
+
               </div>
 
-              <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6">
-                <span className="text-2xl font-serif font-bold text-[#C9A45C] block mb-2">03</span>
-                <h4 className="text-lg font-bold font-serif mb-2 text-white">Material Durability</h4>
-                <p className="text-xs text-slate-300 leading-relaxed">
-                  We select rustproof powder-coated steels, food-contact safe polymers, and reinforced zippers capable of enduring heavy daily use.
-                </p>
-              </div>
+              {/* Closing Statement */}
+              <div className="pt-8 sm:pt-10 border-t border-white/15 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div>
+                  <h4 className="text-lg sm:text-xl font-serif font-bold text-white tracking-tight">
+                    One Destination. Smarter Solutions for Every Home.
+                  </h4>
+                  <p className="text-xs sm:text-sm text-[#C9A45C] font-medium tracking-wide mt-1">
+                    &ldquo;Less searching. Smarter choices. Easier living.&rdquo;
+                  </p>
+                </div>
 
-              <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6">
-                <span className="text-2xl font-serif font-bold text-[#C9A45C] block mb-2">04</span>
-                <h4 className="text-lg font-bold font-serif mb-2 text-white">Transparent Value</h4>
-                <p className="text-xs text-slate-300 leading-relaxed">
-                  No invented discounts, no fabricated star ratings, and no artificial countdowns. Just honest pricing, clear contents, and 7-day returns.
-                </p>
+                <Link
+                  href="#popular"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-bold text-white bg-white/10 hover:bg-white/15 border border-white/20 hover:border-[#C9A45C]/40 transition-all hover:scale-[1.02] active:scale-[0.98]"
+                >
+                  Explore Solutions <ArrowRight className="w-3.5 h-3.5 text-[#C9A45C]" />
+                </Link>
               </div>
 
             </div>
