@@ -33,10 +33,10 @@ export interface HeroConfig {
 }
 
 export const INITIAL_HERO_CONFIG: HeroConfig = {
-  badgeText: "SMART SOLUTIONS. BETTER LIVING.",
-  title: "Smart Solutions for a",
-  highlightText: "Better Home.",
-  subtitle: "Curated products that reduce effort, save time, and make everyday living easier.",
+  badgeText: "YOUR HOME SOLUTIONS DESTINATION",
+  title: "One Destination.",
+  highlightText: "Smarter Solutions",
+  subtitle: "Discover practical home solutions in one place. From kitchen organization and effortless cleaning to space-saving storage and everyday convenience, Dexhaus brings useful products together to make better living easier.",
   mediaType: 'image',
   imageUrl: "/hero-lifestyle.jpg",
   videoUrl: "/hero-video.mp4",
@@ -44,7 +44,7 @@ export const INITIAL_HERO_CONFIG: HeroConfig = {
   primaryCtaLink: "#popular",
   secondaryCtaText: "View Problem Kits",
   secondaryCtaLink: "#combos",
-  bannerAnnouncement: "SMART SOLUTIONS. BETTER LIVING. • FREE PAN-INDIA DELIVERY ON ORDERS OVER ₹999",
+  bannerAnnouncement: "YOUR HOME SOLUTIONS DESTINATION • FREE PAN-INDIA DELIVERY ON ORDERS OVER ₹999",
 };
 
 export const INITIAL_PRODUCTS: Product[] = [

@@ -25,14 +25,24 @@ export default function CustomerLoginPopup({ isOpen, onClose, onSuccess }: Custo
     setError('');
 
     try {
+      const form = e.currentTarget as HTMLFormElement;
+      const activeEmail = (email.trim() || (form.elements.namedItem('email') as HTMLInputElement)?.value?.trim() || '');
+      const activePassword = password || (form.elements.namedItem('password') as HTMLInputElement)?.value || '';
+
+      if (!activeEmail || !activePassword) {
+        setError('Please enter both email and password.');
+        setLoading(false);
+        return;
+      }
+
       if (isLogin) {
-        const { data, error } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
+        const { data, error } = await supabase.auth.signInWithPassword({ email: activeEmail, password: activePassword });
         if (error) throw error;
         onSuccess(data?.user);
       } else {
         const { data, error } = await supabase.auth.signUp({ 
-          email: email.trim(), 
-          password,
+          email: activeEmail, 
+          password: activePassword,
         });
         if (error) throw error;
         if (!data?.session) {
@@ -134,7 +144,10 @@ export default function CustomerLoginPopup({ isOpen, onClose, onSuccess }: Custo
               <div className="relative">
                 <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
                 <input
+                  id="customer-email"
+                  name="email"
                   type="email"
+                  autoComplete="username"
                   required
                   placeholder="Email Address"
                   value={email}
@@ -145,7 +158,10 @@ export default function CustomerLoginPopup({ isOpen, onClose, onSuccess }: Custo
               <div className="relative">
                 <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
                 <input
+                  id="customer-password"
+                  name="password"
                   type="password"
+                  autoComplete={isLogin ? 'current-password' : 'new-password'}
                   required
                   placeholder="Password"
                   value={password}

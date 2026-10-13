@@ -22,8 +22,9 @@ export default function AdminLogin() {
     setLoading(true);
     setError('');
 
-    const cleanUser = username.trim().toLowerCase();
-    const cleanPass = password.trim();
+    const form = e.currentTarget as HTMLFormElement;
+    const cleanUser = (username.trim() || (form.elements.namedItem('username') as HTMLInputElement)?.value?.trim() || '').toLowerCase();
+    const cleanPass = password.trim() || (form.elements.namedItem('password') as HTMLInputElement)?.value?.trim() || '';
 
     if (VALID_USERS.includes(cleanUser) && VALID_PASSWORDS.includes(cleanPass)) {
       if (typeof window !== 'undefined') {
@@ -141,7 +142,10 @@ export default function AdminLogin() {
                 <div className="relative">
                   <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                   <input
+                    id="admin-username"
+                    name="username"
                     type="text"
+                    autoComplete="username"
                     required
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
@@ -158,7 +162,10 @@ export default function AdminLogin() {
                 <div className="relative">
                   <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                   <input
+                    id="admin-password"
+                    name="password"
                     type="password"
+                    autoComplete="current-password"
                     required
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}

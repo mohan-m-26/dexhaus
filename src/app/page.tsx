@@ -25,7 +25,8 @@ import {
   HelpCircle,
   Clock,
   MapPin,
-  Check
+  Check,
+  Home
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useRef, useMemo, useEffect } from 'react';
@@ -786,108 +787,109 @@ export default function Storefront() {
 
       <main className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-16 sm:space-y-24">
         
-        {/* HERO SECTION: SMART SOLUTIONS FOR A BETTER HOME */}
-        <section className="relative w-full min-h-[520px] lg:h-[68vh] max-h-[720px] bg-[#102F43] rounded-[2rem] sm:rounded-[2.5rem] overflow-hidden shadow-2xl flex items-center border border-[#102F43]">
+        {/* HERO SECTION: ONE DESTINATION. SMARTER SOLUTIONS FOR EVERY HOME. */}
+        <section className="relative w-full min-h-[520px] lg:min-h-[560px] bg-gradient-to-br from-[#0B2538] via-[#071827] to-[#0B2538] rounded-[2rem] sm:rounded-[2.5rem] overflow-hidden shadow-2xl flex items-center border border-white/10">
           
           {/* Subtle Ambient Glow */}
           <div className="absolute top-0 right-0 w-full h-full overflow-hidden pointer-events-none">
-            <div className="absolute -top-[15%] -right-[10%] w-[600px] h-[600px] bg-[#C9A45C]/15 rounded-full blur-[90px]" />
-            <div className="absolute bottom-[5%] right-[25%] w-[400px] h-[400px] bg-sky-500/10 rounded-full blur-[80px]" />
+            <div className="absolute -top-[15%] -right-[10%] w-[600px] h-[600px] bg-[#D6AA55]/12 rounded-full blur-[100px]" />
+            <div className="absolute bottom-[5%] right-[25%] w-[450px] h-[450px] bg-sky-500/10 rounded-full blur-[90px]" />
           </div>
 
-          <div className="relative z-10 grid grid-cols-1 md:grid-cols-12 w-full h-full p-8 sm:p-12 lg:p-16 items-center gap-8">
+          <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 w-full h-full p-8 sm:p-12 lg:p-16 items-center gap-10">
             
             {/* Left Copy: Authentic Dexhaus Messaging */}
-            <div className="md:col-span-7 flex flex-col items-start text-white max-w-xl">
+            <div className="lg:col-span-7 flex flex-col items-start text-white max-w-xl">
               <motion.div initial={{ opacity: 0, y: 25 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
                 
-                {/* Brand Tagline Badge */}
-                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-[#C9A45C] text-[11px] font-bold tracking-widest uppercase mb-6">
-                  <Sparkles className="w-3.5 h-3.5" /> {heroConfig?.badgeText || 'SMART SOLUTIONS. BETTER LIVING.'}
+                {/* Eyebrow Badge */}
+                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-[#D6AA55] text-[11px] font-bold tracking-widest uppercase mb-5 sm:mb-6">
+                  <Sparkles className="w-3.5 h-3.5" /> YOUR HOME SOLUTIONS DESTINATION
                 </div>
 
                 {/* Main Headline */}
-                <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold font-serif leading-[1.1] tracking-tight mb-5 text-white">
-                  {heroConfig?.title || 'Smart Solutions for a'}{' '}
-                  <span className="text-[#C9A45C] italic">{heroConfig?.highlightText || 'Better Home.'}</span>
+                <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold font-serif leading-[1.12] tracking-tight mb-5 text-white">
+                  One Destination.{' '}
+                  <span className="text-[#D6AA55] italic">Smarter Solutions</span>{' '}
+                  for Every Home.
                 </h1>
 
-                {/* Supporting Tagline */}
-                <p className="text-base sm:text-lg text-slate-200 mb-8 font-light leading-relaxed max-w-lg">
-                  {heroConfig?.subtitle || 'Curated products that reduce effort, save time, and make everyday living easier.'}
+                {/* Supporting Description */}
+                <p className="text-base sm:text-lg text-slate-200/95 mb-8 font-light leading-relaxed max-w-lg">
+                  Discover practical home solutions in one place. From kitchen organization and effortless cleaning to space-saving storage and everyday convenience, Dexhaus brings useful products together to make better living easier.
                 </p>
 
                 {/* CTA Buttons */}
                 <div className="flex flex-wrap items-center gap-4">
                   <Link 
-                    href={heroConfig?.primaryCtaLink || '#popular'} 
-                    className="group inline-flex items-center gap-2.5 bg-white text-[#102F43] px-7 py-3.5 rounded-full font-bold text-sm shadow-xl hover:bg-[#F8F5ED] hover:scale-[1.02] active:scale-[0.98] transition-all"
+                    href="#popular" 
+                    className="group inline-flex items-center gap-2.5 bg-[#F8F5ED] text-[#071827] px-7 py-3.5 rounded-full font-bold text-sm shadow-xl hover:bg-white hover:scale-[1.02] active:scale-[0.98] transition-all"
                   >
-                    {heroConfig?.primaryCtaText || 'Explore Solutions'} <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    Explore Solutions <ArrowRight className="w-4 h-4 text-[#D6AA55] group-hover:translate-x-1 transition-transform" />
                   </Link>
 
                   <Link 
-                    href={heroConfig?.secondaryCtaLink || '#combos'} 
-                    className="inline-flex items-center gap-2 px-6 py-3.5 rounded-full font-bold text-sm text-white border border-white/30 hover:bg-white/10 transition-colors"
+                    href="#combos" 
+                    className="inline-flex items-center gap-2 px-6 py-3.5 rounded-full font-bold text-sm text-white border border-white/25 hover:bg-white/10 transition-colors"
                   >
-                    {heroConfig?.secondaryCtaText || 'View Problem Kits'}
+                    View Problem Kits
                   </Link>
                 </div>
 
-                {/* Honest Value Indicators */}
-                <div className="mt-10 pt-6 border-t border-white/15 grid grid-cols-2 sm:grid-cols-3 gap-4 text-xs text-slate-300">
+                {/* Benefit Row */}
+                <div className="mt-9 pt-6 border-t border-white/15 flex flex-wrap items-center gap-y-3 gap-x-5 text-xs text-slate-200/90 font-medium">
                   <div className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-[#C9A45C]" />
-                    <span>Tested Dimensions</span>
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#D6AA55]" />
+                    <span>Practical Home Solutions</span>
                   </div>
+                  <span className="text-white/20 hidden sm:inline">•</span>
                   <div className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-[#C9A45C]" />
-                    <span>No-Drill Friendly</span>
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#D6AA55]" />
+                    <span>Thoughtful Product Selection</span>
                   </div>
-                  <div className="flex items-center gap-2 col-span-2 sm:col-span-1">
-                    <Check className="w-4 h-4 text-[#C9A45C]" />
-                    <span>Transparent Pricing</span>
+                  <span className="text-white/20 hidden sm:inline">•</span>
+                  <div className="flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#D6AA55]" />
+                    <span>Clear, Transparent Pricing</span>
                   </div>
                 </div>
 
               </motion.div>
             </div>
 
-            {/* Right Side: High-Resolution Real Lifestyle Media (Video or Photo) */}
-            <div className="md:col-span-5 h-[340px] sm:h-[400px] lg:h-[480px] w-full relative flex items-center justify-center">
+            {/* Right Side: High-Resolution Real Lifestyle Media */}
+            <div className="lg:col-span-5 h-[340px] sm:h-[400px] lg:h-[480px] w-full relative flex items-center justify-center">
               <motion.div 
-                initial={{ opacity: 0, scale: 0.95 }} 
+                initial={{ opacity: 0, scale: 0.96 }} 
                 animate={{ opacity: 1, scale: 1 }} 
                 transition={{ duration: 0.8, delay: 0.2 }}
-                className="relative w-full h-full rounded-[2rem] overflow-hidden shadow-2xl border-4 border-white/10 bg-slate-900"
+                className="relative w-full h-full rounded-[2rem] overflow-hidden shadow-2xl border border-white/15 bg-[#071827]"
               >
-                {heroConfig?.mediaType === 'video' && heroConfig?.videoUrl ? (
-                  <video
-                    src={heroConfig.videoUrl}
-                    autoPlay
-                    loop
-                    muted
-                    playsInline
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <Image 
-                    src={heroConfig?.imageUrl || "/hero-lifestyle.jpg"} 
-                    alt="DEXHAUS Thoughtfully Organized Modern Kitchen and Living Space" 
-                    fill 
-                    className="object-cover" 
-                    priority
-                    sizes="(max-width: 768px) 100vw, 45vw"
-                  />
-                )}
-                
-                {/* Subtle overlay card highlighting authentic curation */}
-                <div className="absolute bottom-5 left-5 right-5 p-4 rounded-2xl bg-[#102F43]/90 backdrop-blur-md border border-white/15 text-white flex items-center justify-between">
-                  <div>
-                    <span className="text-[10px] text-[#C9A45C] font-bold uppercase tracking-wider block">Thoughtful Living</span>
-                    <p className="text-xs font-medium text-slate-200">Organization engineered for modern homes.</p>
+                {/* Smooth dark-navy gradient blending into the photograph */}
+                <div className="pointer-events-none absolute inset-y-0 left-0 w-28 bg-gradient-to-r from-[#071827]/80 via-[#071827]/30 to-transparent z-10 hidden lg:block" />
+
+                <Image 
+                  src="/hero-lifestyle.jpg" 
+                  alt="DEXHAUS Thoughtfully Organized Modern Indian Home Kitchen and Living Space" 
+                  fill 
+                  className="object-cover" 
+                  priority
+                  sizes="(max-width: 768px) 100vw, 45vw"
+                />
+
+                {/* Image overlay label */}
+                <div className="absolute bottom-5 left-5 right-5 sm:left-6 sm:right-auto sm:max-w-xs p-3.5 sm:p-4 rounded-2xl bg-[#071827]/85 backdrop-blur-md border border-[#D6AA55]/30 text-white flex items-center gap-3.5 shadow-2xl z-20">
+                  <div className="w-9 h-9 rounded-xl bg-[#0B2538] border border-[#D6AA55]/30 flex items-center justify-center flex-shrink-0 text-[#D6AA55]">
+                    <Home className="w-4 h-4" />
                   </div>
-                  <Package className="w-5 h-5 text-[#C9A45C] flex-shrink-0" />
+                  <div>
+                    <span className="text-[10px] text-[#D6AA55] font-bold uppercase tracking-widest block">
+                      THOUGHTFUL LIVING
+                    </span>
+                    <p className="text-xs text-slate-200/90 font-light mt-0.5">
+                      Practical solutions for everyday homes.
+                    </p>
+                  </div>
                 </div>
               </motion.div>
             </div>
