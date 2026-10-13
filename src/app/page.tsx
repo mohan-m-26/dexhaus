@@ -527,10 +527,16 @@ export default function Storefront() {
               className="fixed inset-y-0 left-0 w-[290px] bg-white dark:bg-slate-950 shadow-2xl z-[201] flex flex-col border-r border-slate-200 dark:border-slate-800 lg:hidden"
             >
               <div className="p-6 flex items-center justify-between border-b border-slate-100 dark:border-slate-900">
-                <div className="flex flex-col">
-                  <span className="font-serif font-black tracking-wider text-xl text-[#102F43] dark:text-white">DEXHAUS</span>
-                  <span className="text-[9px] tracking-widest text-[#C9A45C] font-semibold uppercase">Smart Solutions. Better Living.</span>
-                </div>
+                <Link href="/" onClick={() => setMobileMenuOpen(false)} className="flex flex-col">
+                  <Image 
+                    src="/Dexhaus_logo.png" 
+                    alt="DEXHAUS" 
+                    width={140} 
+                    height={32} 
+                    className="h-7 w-auto dark:invert" 
+                  />
+                  <span className="text-[9px] tracking-widest text-[#C9A45C] font-semibold uppercase mt-0.5">Smart Solutions. Better Living.</span>
+                </Link>
                 <button onClick={() => setMobileMenuOpen(false)} className="text-slate-400 hover:text-red-500">
                   <X className="w-6 h-6" />
                 </button>
@@ -625,9 +631,14 @@ export default function Storefront() {
           {/* Logo & Brand Positioning */}
           <Link href="/" className="flex-shrink-0 flex items-center gap-3">
             <div className="flex flex-col">
-              <span className="font-serif font-black text-2xl sm:text-3xl tracking-tight text-[#102F43] dark:text-white leading-none">
-                DEXHAUS
-              </span>
+              <Image 
+                src="/Dexhaus_logo.png" 
+                alt="DEXHAUS" 
+                width={170} 
+                height={38} 
+                className="h-8 sm:h-9 w-auto dark:invert" 
+                priority
+              />
               <span className="text-[9px] sm:text-[10px] tracking-[0.2em] text-[#C9A45C] font-semibold uppercase mt-0.5">
                 Curated Home Solutions
               </span>
@@ -1292,10 +1303,14 @@ export default function Storefront() {
             {/* Column 1: Brand & Positioning */}
             <div>
               <div className="mb-4">
-                <span className="font-serif font-black text-2xl tracking-tight text-white block">
-                  DEXHAUS
-                </span>
-                <span className="text-[9px] tracking-widest text-[#C9A45C] font-semibold uppercase">
+                <Image 
+                  src="/Dexhaus_logo.png" 
+                  alt="DEXHAUS" 
+                  width={160} 
+                  height={36} 
+                  className="h-8 w-auto invert mb-1" 
+                />
+                <span className="text-[9px] tracking-widest text-[#C9A45C] font-semibold uppercase block">
                   SMART SOLUTIONS. BETTER LIVING.
                 </span>
               </div>

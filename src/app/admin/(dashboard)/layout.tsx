@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 import { 
   LayoutDashboard, 
@@ -75,7 +76,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         {/* Brand Header */}
         <div className="h-20 flex flex-col justify-center px-6 border-b border-slate-200 dark:border-slate-800 bg-[#102F43] text-white">
           <Link href="/admin" className="flex flex-col">
-            <span className="font-serif font-black tracking-widest text-lg text-white">DEXHAUS</span>
+            <Image 
+              src="/Dexhaus_logo.png" 
+              alt="DEXHAUS" 
+              width={140} 
+              height={32} 
+              className="h-6 w-auto invert mb-1" 
+              priority
+            />
             <span className="text-[9px] font-bold tracking-widest text-[#C9A45C] uppercase">Admin Control Room</span>
           </Link>
         </div>

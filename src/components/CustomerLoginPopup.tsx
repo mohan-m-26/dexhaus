@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Mail, Lock, ArrowRight, Loader2, ShieldCheck } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
@@ -103,9 +104,13 @@ export default function CustomerLoginPopup({ isOpen, onClose, onSuccess }: Custo
             </button>
 
             <div className="text-center mb-8 pt-4">
-              <div className="w-16 h-16 bg-[#F8F5ED] dark:bg-slate-900 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-amber-100 dark:border-slate-800">
-                <ShieldCheck className="w-8 h-8 text-[#102F43] dark:text-[#C9A45C]" />
-              </div>
+              <Image 
+                src="/Dexhaus_logo.png" 
+                alt="DEXHAUS" 
+                width={150} 
+                height={34} 
+                className="h-7 w-auto mx-auto mb-4 dark:invert" 
+              />
               <h2 className="text-2xl font-bold font-serif text-[#102F43] dark:text-white mb-2">
                 {isLogin ? 'Welcome Back' : 'Create Account'}
               </h2>

@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { Lock, User, ArrowLeft, ArrowRight, ShieldCheck, Sparkles } from 'lucide-react';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
@@ -54,8 +55,15 @@ export default function AdminLogin() {
         {/* Top Header */}
         <div className="relative z-10">
           <Link href="/" className="inline-block transition-transform hover:scale-105">
-            <span className="font-serif font-black tracking-widest text-3xl text-white">DEXHAUS</span>
-            <span className="block text-[10px] tracking-[0.25em] text-[#C9A45C] font-bold uppercase mt-1">
+            <Image 
+              src="/Dexhaus_logo.png" 
+              alt="DEXHAUS" 
+              width={180} 
+              height={40} 
+              className="h-9 w-auto invert mb-1" 
+              priority
+            />
+            <span className="block text-[10px] tracking-[0.25em] text-[#C9A45C] font-bold uppercase">
               Smart Solutions. Better Living.
             </span>
           </Link>
@@ -96,7 +104,13 @@ export default function AdminLogin() {
         {/* Top Bar */}
         <div className="flex justify-between items-center p-8 relative z-10">
           <div className="lg:hidden block">
-            <span className="font-serif font-black tracking-wider text-xl text-[#102F43] dark:text-white">DEXHAUS</span>
+            <Image 
+              src="/Dexhaus_logo.png" 
+              alt="DEXHAUS" 
+              width={140} 
+              height={32} 
+              className="h-7 w-auto dark:invert" 
+            />
           </div>
           <Link 
             href="/" 
