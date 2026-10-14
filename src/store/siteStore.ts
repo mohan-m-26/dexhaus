@@ -56,7 +56,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     price: 899,
     originalPrice: 1299,
     image: "/product-kitchen-organizer.jpg",
-    hoverVideo: "",
+    hoverVideo: "/hero-video.mp4",
     hoverImage: "",
     specs: "Matte black steel frame • Double-tier clearance • Non-slip feet",
     benefit: "Frees up counter surface and keeps everyday cooking essentials within reach.",
@@ -86,7 +86,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     price: 649,
     originalPrice: 899,
     image: "/product-bathroom-rack.jpg",
-    hoverVideo: "",
+    hoverVideo: "/hero-video.mp4",
     hoverImage: "",
     specs: "Corrosion-resistant steel • Heavy-duty adhesive mount • Water drainage slots",
     benefit: "Holds bottles securely without drilling into bathroom tiles or causing rust.",
@@ -243,7 +243,7 @@ export const useSiteStore = create<SiteStore>()(
       }
     }),
     {
-      name: 'dexhaus_site_data_v1',
+      name: 'dexhaus_site_data_v2',
     }
   )
 );

@@ -25,6 +25,7 @@ export default function ProductCard({
   const handleMouseEnter = () => {
     setIsHovered(true);
     if (videoRef.current && product.hoverVideo) {
+      videoRef.current.currentTime = 0;
       videoRef.current.play().catch(() => {});
     }
   };
@@ -33,7 +34,15 @@ export default function ProductCard({
     setIsHovered(false);
     if (videoRef.current && product.hoverVideo) {
       videoRef.current.pause();
-      videoRef.current.currentTime = 0;
+    }
+  };
+
+  const handleTouchToggle = () => {
+    if (!product.hoverVideo) return;
+    if (isHovered) {
+      handleMouseLeave();
+    } else {
+      handleMouseEnter();
     }
   };
 
@@ -49,25 +58,31 @@ export default function ProductCard({
       className="group flex flex-col bg-white dark:bg-slate-900 rounded-[1.75rem] overflow-hidden border border-slate-200/80 dark:border-slate-800 hover:shadow-xl hover:border-slate-300 dark:hover:border-slate-700 transition-all duration-300"
     >
       {/* Visual Container */}
-      <div className="relative aspect-square overflow-hidden bg-slate-50 dark:bg-slate-800 m-3 rounded-2xl">
-        
-        {/* Hover Video Player or Image */}
-        {product.hoverVideo && isHovered ? (
+      <div 
+        onClick={handleTouchToggle}
+        className="relative aspect-square overflow-hidden bg-slate-50 dark:bg-slate-800 m-3 rounded-2xl cursor-pointer"
+      >
+        {/* Base Image */}
+        <Image
+          src={(isHovered && product.hoverImage) ? product.hoverImage : product.image}
+          alt={product.title}
+          fill
+          className="object-cover group-hover:scale-105 transition-transform duration-500"
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+        />
+
+        {/* Hover Video Player (Preloaded & Fades in smoothly) */}
+        {product.hoverVideo && (
           <video
             ref={videoRef}
             src={product.hoverVideo}
             loop
             muted
             playsInline
-            className="w-full h-full object-cover"
-          />
-        ) : (
-          <Image
-            src={(isHovered && product.hoverImage) ? product.hoverImage : product.image}
-            alt={product.title}
-            fill
-            className="object-cover group-hover:scale-105 transition-transform duration-500"
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+            preload="auto"
+            className={`absolute inset-0 w-full h-full object-cover z-10 transition-opacity duration-300 pointer-events-none ${
+              isHovered ? 'opacity-100' : 'opacity-0'
+            }`}
           />
         )}
 
