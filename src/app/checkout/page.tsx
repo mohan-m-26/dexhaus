@@ -202,7 +202,10 @@ export default function CheckoutPage() {
               <Image src="/Dexhaus_icon_transparent.png" alt="Dexhaus" width={32} height={32} className="w-full h-full object-contain dark:hidden" />
               <Image src="/Dexhaus_icon_white.png" alt="Dexhaus" width={32} height={32} className="w-full h-full object-contain hidden dark:block" />
             </div>
-            <span className="font-serif font-black text-2xl tracking-tight text-[#112a46] dark:text-white">DEXHAUS</span>
+            <div className="flex flex-col">
+              <span className="font-serif font-black text-xl sm:text-2xl tracking-tight text-[#0B2538] dark:text-white leading-none">DEXHAUS</span>
+              <span className="text-[9.5px] font-medium text-[#0B2538] dark:text-[#D6AA55] mt-0.5 leading-none">Smart Solutions. Better Living</span>
+            </div>
           </Link>
           <div className="flex items-center gap-2 text-sm font-bold text-green-600 dark:text-green-500">
             <ShieldCheck className="w-5 h-5" /> Secure Checkout

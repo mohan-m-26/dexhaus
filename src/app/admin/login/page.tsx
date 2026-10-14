@@ -66,9 +66,9 @@ export default function AdminLogin() {
               />
             </div>
             <div className="flex flex-col">
-              <span className="font-serif font-black tracking-widest text-2xl text-white leading-none">DEXHAUS</span>
-              <span className="block text-[9px] tracking-[0.25em] text-[#C9A45C] font-bold uppercase mt-1">
-                Smart Solutions. Better Living.
+              <span className="font-serif font-black tracking-tight text-2xl text-white leading-none">DEXHAUS</span>
+              <span className="block text-[10px] text-[#D6AA55] font-medium mt-1 leading-none">
+                Smart Solutions. Better Living
               </span>
             </div>
           </Link>

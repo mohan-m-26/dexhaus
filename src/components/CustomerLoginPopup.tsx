@@ -121,9 +121,14 @@ export default function CustomerLoginPopup({ isOpen, onClose, onSuccess }: Custo
                     className="w-full h-full object-contain hidden dark:block" 
                   />
                 </div>
-                <span className="font-serif font-black text-2xl tracking-tight text-[#102F43] dark:text-white leading-none">
-                  DEXHAUS
-                </span>
+                <div className="flex flex-col text-left">
+                  <span className="font-serif font-black text-2xl tracking-tight text-[#0B2538] dark:text-white leading-none">
+                    DEXHAUS
+                  </span>
+                  <span className="text-[10px] font-medium text-[#0B2538] dark:text-[#D6AA55] mt-1 leading-none">
+                    Smart Solutions. Better Living
+                  </span>
+                </div>
               </div>
               <h2 className="text-2xl font-bold font-serif text-[#102F43] dark:text-white mb-2">
                 {isLogin ? 'Welcome Back' : 'Create Account'}

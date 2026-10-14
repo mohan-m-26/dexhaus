@@ -545,8 +545,8 @@ export default function Storefront() {
                     />
                   </div>
                   <div className="flex flex-col">
-                    <span className="font-serif font-black tracking-wider text-xl text-[#102F43] dark:text-white leading-none">DEXHAUS</span>
-                    <span className="text-[9px] tracking-widest text-[#C9A45C] font-semibold uppercase mt-0.5">Smart Solutions. Better Living.</span>
+                    <span className="font-serif font-black tracking-tight text-xl text-[#0B2538] dark:text-white leading-none">DEXHAUS</span>
+                    <span className="text-[10px] font-medium text-[#0B2538] dark:text-[#D6AA55] mt-1 leading-none">Smart Solutions. Better Living</span>
                   </div>
                 </Link>
                 <button onClick={() => setMobileMenuOpen(false)} className="text-slate-400 hover:text-red-500">
@@ -641,31 +641,31 @@ export default function Storefront() {
         <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
           
           {/* Logo & Brand Positioning */}
-          <Link href="/" className="flex-shrink-0 flex items-center gap-3 group">
-            <div className="relative w-10 h-10 flex-shrink-0">
+          <Link href="/" className="flex-shrink-0 flex items-center gap-2.5 sm:gap-3 group">
+            <div className="relative w-8 h-8 sm:w-9 sm:h-9 flex-shrink-0">
               <Image 
                 src="/Dexhaus_icon_transparent.png" 
                 alt="Dexhaus" 
-                width={40} 
-                height={40} 
+                width={36} 
+                height={36} 
                 className="w-full h-full object-contain dark:hidden group-hover:scale-105 transition-transform" 
                 priority
               />
               <Image 
                 src="/Dexhaus_icon_white.png" 
                 alt="Dexhaus" 
-                width={40} 
-                height={40} 
+                width={36} 
+                height={36} 
                 className="w-full h-full object-contain hidden dark:block group-hover:scale-105 transition-transform" 
                 priority
               />
             </div>
-            <div className="flex flex-col">
-              <span className="font-serif font-black text-2xl tracking-tight text-[#102F43] dark:text-white leading-none">
+            <div className="flex flex-col justify-center">
+              <span className="font-serif font-black text-xl sm:text-2xl tracking-tight text-[#0B2538] dark:text-white leading-none">
                 DEXHAUS
               </span>
-              <span className="text-[9px] sm:text-[10px] tracking-[0.2em] text-[#C9A45C] font-semibold uppercase mt-0.5">
-                Curated Home Solutions
+              <span className="text-[9px] sm:text-[10.5px] font-medium tracking-tight sm:tracking-normal text-[#0B2538] dark:text-[#D6AA55] mt-1 leading-none whitespace-nowrap">
+                Smart Solutions. Better Living
               </span>
             </div>
           </Link>
@@ -1341,8 +1341,8 @@ export default function Storefront() {
                   <span className="font-serif font-black text-2xl tracking-tight text-white leading-none">
                     DEXHAUS
                   </span>
-                  <span className="text-[9px] tracking-widest text-[#C9A45C] font-semibold uppercase mt-0.5">
-                    SMART SOLUTIONS. BETTER LIVING.
+                  <span className="text-[10px] font-medium text-[#D6AA55] mt-1 leading-none">
+                    Smart Solutions. Better Living
                   </span>
                 </div>
               </div>
