@@ -33,3 +33,11 @@ input:-webkit-autofill:active {
   -webkit-box-shadow: 0 0 0px 1000px #020617 inset !important;
   box-shadow: 0 0 0px 1000px #020617 inset !important;
 }
+
+/* Desktop Custom Cursor: Hide native laptop pointer when custom cursor is active */
+@media (hover: hover) and (pointer: fine) {
+  body.cursor-none,
+  body.cursor-none * {
+    cursor: none !important;
+  }
+}
