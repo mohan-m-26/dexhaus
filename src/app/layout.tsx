@@ -11,6 +11,17 @@ export const metadata: Metadata = {
   title: "DEXHAUS | Smart Solutions for a Better Home",
   description: "Curated products that reduce effort, save time, and make everyday living easier. SMART SOLUTIONS. BETTER LIVING.",
   keywords: ["smart home solutions", "home organization", "practical home solutions", "space-saving storage", "Dexhaus"],
+  icons: {
+    icon: [
+      { url: '/favicon.ico' },
+      { url: '/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
+      { url: '/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
+    ],
+    apple: [
+      { url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
+    ],
+  },
+  manifest: '/site.webmanifest',
   openGraph: {
     title: "DEXHAUS | Smart Solutions for a Better Home",
     description: "Curated products that reduce effort, save time, and make everyday living easier.",
