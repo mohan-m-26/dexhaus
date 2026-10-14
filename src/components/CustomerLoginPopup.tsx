@@ -104,13 +104,27 @@ export default function CustomerLoginPopup({ isOpen, onClose, onSuccess }: Custo
             </button>
 
             <div className="text-center mb-8 pt-4">
-              <Image 
-                src="/Dexhaus_logo.png" 
-                alt="DEXHAUS" 
-                width={150} 
-                height={34} 
-                className="h-7 w-auto mx-auto mb-4 dark:invert" 
-              />
+              <div className="flex items-center justify-center gap-2.5 mb-4">
+                <div className="relative w-8 h-8 flex-shrink-0">
+                  <Image 
+                    src="/Dexhaus_icon_transparent.png" 
+                    alt="Dexhaus" 
+                    width={32} 
+                    height={32} 
+                    className="w-full h-full object-contain dark:hidden" 
+                  />
+                  <Image 
+                    src="/Dexhaus_icon_white.png" 
+                    alt="Dexhaus" 
+                    width={32} 
+                    height={32} 
+                    className="w-full h-full object-contain hidden dark:block" 
+                  />
+                </div>
+                <span className="font-serif font-black text-2xl tracking-tight text-[#102F43] dark:text-white leading-none">
+                  DEXHAUS
+                </span>
+              </div>
               <h2 className="text-2xl font-bold font-serif text-[#102F43] dark:text-white mb-2">
                 {isLogin ? 'Welcome Back' : 'Create Account'}
               </h2>

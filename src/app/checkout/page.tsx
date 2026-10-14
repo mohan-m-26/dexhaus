@@ -198,7 +198,10 @@ export default function CheckoutPage() {
       <header className="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 py-6 px-4 sm:px-8">
         <div className="max-w-6xl mx-auto flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2.5 hover:opacity-85 transition-opacity">
-            <Image src="/Dexhaus_icon_transparent.png" alt="Dexhaus" width={32} height={32} className="w-8 h-8 object-contain" />
+            <div className="relative w-8 h-8 flex-shrink-0">
+              <Image src="/Dexhaus_icon_transparent.png" alt="Dexhaus" width={32} height={32} className="w-full h-full object-contain dark:hidden" />
+              <Image src="/Dexhaus_icon_white.png" alt="Dexhaus" width={32} height={32} className="w-full h-full object-contain hidden dark:block" />
+            </div>
             <span className="font-serif font-black text-2xl tracking-tight text-[#112a46] dark:text-white">DEXHAUS</span>
           </Link>
           <div className="flex items-center gap-2 text-sm font-bold text-green-600 dark:text-green-500">

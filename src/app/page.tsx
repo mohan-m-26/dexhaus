@@ -534,7 +534,14 @@ export default function Storefront() {
                       alt="Dexhaus" 
                       width={32} 
                       height={32} 
-                      className="w-full h-full object-contain" 
+                      className="w-full h-full object-contain dark:hidden" 
+                    />
+                    <Image 
+                      src="/Dexhaus_icon_white.png" 
+                      alt="Dexhaus" 
+                      width={32} 
+                      height={32} 
+                      className="w-full h-full object-contain hidden dark:block" 
                     />
                   </div>
                   <div className="flex flex-col">
@@ -641,7 +648,15 @@ export default function Storefront() {
                 alt="Dexhaus" 
                 width={40} 
                 height={40} 
-                className="w-full h-full object-contain group-hover:scale-105 transition-transform" 
+                className="w-full h-full object-contain dark:hidden group-hover:scale-105 transition-transform" 
+                priority
+              />
+              <Image 
+                src="/Dexhaus_icon_white.png" 
+                alt="Dexhaus" 
+                width={40} 
+                height={40} 
+                className="w-full h-full object-contain hidden dark:block group-hover:scale-105 transition-transform" 
                 priority
               />
             </div>
@@ -1315,11 +1330,11 @@ export default function Storefront() {
               <div className="mb-4 flex items-center gap-3">
                 <div className="relative w-9 h-9 flex-shrink-0">
                   <Image 
-                    src="/Dexhaus_icon_transparent.png" 
+                    src="/Dexhaus_icon_white.png" 
                     alt="DEXHAUS" 
                     width={36} 
                     height={36} 
-                    className="w-full h-full object-contain invert" 
+                    className="w-full h-full object-contain" 
                   />
                 </div>
                 <div className="flex flex-col">

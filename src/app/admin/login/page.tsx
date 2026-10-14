@@ -57,11 +57,11 @@ export default function AdminLogin() {
           <Link href="/" className="inline-flex items-center gap-3 transition-transform hover:scale-105">
             <div className="relative w-10 h-10 flex-shrink-0">
               <Image 
-                src="/Dexhaus_icon_transparent.png" 
+                src="/Dexhaus_icon_white.png" 
                 alt="DEXHAUS" 
                 width={40} 
                 height={40} 
-                className="w-full h-full object-contain invert" 
+                className="w-full h-full object-contain" 
                 priority
               />
             </div>
@@ -109,13 +109,22 @@ export default function AdminLogin() {
         {/* Top Bar */}
         <div className="flex justify-between items-center p-8 relative z-10">
           <div className="lg:hidden flex items-center gap-2">
-            <Image 
-              src="/Dexhaus_icon_transparent.png" 
-              alt="DEXHAUS" 
-              width={28} 
-              height={28} 
-              className="w-7 h-7 object-contain" 
-            />
+            <div className="relative w-7 h-7 flex-shrink-0">
+              <Image 
+                src="/Dexhaus_icon_transparent.png" 
+                alt="DEXHAUS" 
+                width={28} 
+                height={28} 
+                className="w-full h-full object-contain dark:hidden" 
+              />
+              <Image 
+                src="/Dexhaus_icon_white.png" 
+                alt="DEXHAUS" 
+                width={28} 
+                height={28} 
+                className="w-full h-full object-contain hidden dark:block" 
+              />
+            </div>
             <span className="font-serif font-black tracking-wider text-xl text-[#102F43] dark:text-white">DEXHAUS</span>
           </div>
           <Link 

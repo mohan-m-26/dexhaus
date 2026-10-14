@@ -77,11 +77,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <div className="h-20 flex flex-col justify-center px-6 border-b border-slate-200 dark:border-slate-800 bg-[#102F43] text-white">
           <Link href="/admin" className="flex items-center gap-2.5">
             <Image 
-              src="/Dexhaus_icon_transparent.png" 
+              src="/Dexhaus_icon_white.png" 
               alt="DEXHAUS" 
               width={32} 
               height={32} 
-              className="w-8 h-8 object-contain invert" 
+              className="w-8 h-8 object-contain" 
               priority
             />
             <div className="flex flex-col">
