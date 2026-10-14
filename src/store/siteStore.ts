@@ -17,6 +17,20 @@ export interface Product {
   badge?: string;
 }
 
+export interface HeroSlide {
+  id: string;
+  badgeText: string;
+  title: string;
+  highlightText: string;
+  subtitle: string;
+  mediaType: 'image' | 'video';
+  imageUrl: string;
+  videoUrl: string;
+  redirectUrl: string;
+  ctaText: string;
+  targetProductId?: string;
+}
+
 export interface HeroConfig {
   badgeText: string;
   title: string;
@@ -30,6 +44,8 @@ export interface HeroConfig {
   secondaryCtaText: string;
   secondaryCtaLink: string;
   bannerAnnouncement: string;
+  slides: HeroSlide[];
+  autoSlideInterval?: number; // In seconds, default 5
 }
 
 export const INITIAL_HERO_CONFIG: HeroConfig = {
@@ -45,6 +61,61 @@ export const INITIAL_HERO_CONFIG: HeroConfig = {
   secondaryCtaText: "View Problem Kits",
   secondaryCtaLink: "#combos",
   bannerAnnouncement: "YOUR HOME SOLUTIONS DESTINATION • FREE PAN-INDIA DELIVERY ON ORDERS OVER ₹999",
+  autoSlideInterval: 5,
+  slides: [
+    {
+      id: "slide-mop",
+      badgeText: "LIVE DEMO • CLEANING INNOVATION",
+      title: "Dual-Chamber Hands-Free Flat Mop System",
+      highlightText: "Streak-Free Cleaning",
+      subtitle: "Cleans tile and hardwood effortlessly without manual wringing or dirty hands. Complete with 360° swivel head and dual microfiber pads.",
+      mediaType: "video",
+      imageUrl: "/product-microfiber-mop.jpg",
+      videoUrl: "/hero-video.mp4",
+      redirectUrl: "#prod-cleaning-1",
+      ctaText: "Shop Flat Mop System",
+      targetProductId: "prod-cleaning-1"
+    },
+    {
+      id: "slide-kitchen",
+      badgeText: "BESTSELLER • KITCHEN ORGANIZATION",
+      title: "2-Tier Countertop Spice & Bottle Organizer",
+      highlightText: "Double Your Counter Space",
+      subtitle: "Heavy-duty matte black steel with non-slip feet. Keep cooking oils, spices, and jars neatly organized and within instant reach.",
+      mediaType: "image",
+      imageUrl: "/product-kitchen-organizer.jpg",
+      videoUrl: "/hero-video.mp4",
+      redirectUrl: "#prod-kitchen-1",
+      ctaText: "Get Countertop Rack",
+      targetProductId: "prod-kitchen-1"
+    },
+    {
+      id: "slide-bathroom",
+      badgeText: "POPULAR • NO-DRILL BATHROOM",
+      title: "Rustproof 3-Tier Corner Shower Caddy",
+      highlightText: "Zero Tile Damage",
+      subtitle: "High-capacity corrosion-resistant steel rack with rapid drainage and ultra-strong adhesive mounting. No tools or drilling required.",
+      mediaType: "video",
+      imageUrl: "/product-bathroom-rack.jpg",
+      videoUrl: "/hero-video.mp4",
+      redirectUrl: "#prod-bathroom-1",
+      ctaText: "Order Shower Caddy",
+      targetProductId: "prod-bathroom-1"
+    },
+    {
+      id: "slide-storage",
+      badgeText: "SPACE SAVER • SMART STORAGE",
+      title: "Reinforced Clear-Window Fabric Storage Box",
+      highlightText: "Effortless Identification",
+      subtitle: "High-density linen-blend fabric with dual metal zippers and clear front window for easy visibility of quilts, clothes, and seasonal linens.",
+      mediaType: "image",
+      imageUrl: "/product-storage-box.jpg",
+      videoUrl: "/hero-video.mp4",
+      redirectUrl: "#prod-storage-1",
+      ctaText: "View Storage Solutions",
+      targetProductId: "prod-storage-1"
+    }
+  ]
 };
 
 export const INITIAL_PRODUCTS: Product[] = [
@@ -243,7 +314,7 @@ export const useSiteStore = create<SiteStore>()(
       }
     }),
     {
-      name: 'dexhaus_site_data_v2',
+      name: 'dexhaus_site_data_v3',
     }
   )
 );

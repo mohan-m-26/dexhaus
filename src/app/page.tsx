@@ -26,7 +26,9 @@ import {
   Clock,
   MapPin,
   Check,
-  Home
+  Home,
+  Play,
+  Pause
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useRef, useMemo, useEffect } from 'react';
@@ -244,6 +246,37 @@ export default function Storefront() {
   const [showTrackOrderModal, setShowTrackOrderModal] = useState(false);
   const [trackOrderId, setTrackOrderId] = useState('');
   const [trackOrderResult, setTrackOrderResult] = useState<string | null>(null);
+
+  // Hero Carousel & Live Video Showcase State
+  const [currentHeroSlide, setCurrentHeroSlide] = useState(0);
+  const [heroPaused, setHeroPaused] = useState(false);
+  const heroSlides = (heroConfig?.slides && heroConfig.slides.length > 0) ? heroConfig.slides : [
+    {
+      id: "slide-default",
+      badgeText: heroConfig?.badgeText || "YOUR HOME SOLUTIONS DESTINATION",
+      title: heroConfig?.title || "One Destination.",
+      highlightText: heroConfig?.highlightText || "Smarter Solutions",
+      subtitle: heroConfig?.subtitle || "Discover practical home solutions in one place.",
+      mediaType: heroConfig?.mediaType || 'image',
+      imageUrl: heroConfig?.imageUrl || "/hero-lifestyle.jpg",
+      videoUrl: heroConfig?.videoUrl || "/hero-video.mp4",
+      redirectUrl: heroConfig?.primaryCtaLink || "#popular",
+      ctaText: heroConfig?.primaryCtaText || "Explore Solutions"
+    }
+  ];
+
+  useEffect(() => {
+    if (heroPaused || heroSlides.length <= 1) return;
+    const interval = (heroConfig?.autoSlideInterval || 5) * 1000;
+    const timer = setInterval(() => {
+      setCurrentHeroSlide((prev) => (prev + 1) % heroSlides.length);
+    }, interval);
+    return () => clearInterval(timer);
+  }, [heroPaused, heroSlides.length, heroConfig?.autoSlideInterval]);
+
+  const activeSlide = heroSlides[currentHeroSlide] || heroSlides[0];
+  const nextHeroSlide = () => setCurrentHeroSlide((prev) => (prev + 1) % heroSlides.length);
+  const prevHeroSlide = () => setCurrentHeroSlide((prev) => (prev - 1 + heroSlides.length) % heroSlides.length);
 
   // Search & Filter State
   const [searchQuery, setSearchQuery] = useState('');
@@ -823,114 +856,223 @@ export default function Storefront() {
 
       <main className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-16 sm:space-y-24">
         
-        {/* HERO SECTION: ONE DESTINATION. SMARTER SOLUTIONS FOR EVERY HOME. */}
-        <section className="relative w-full min-h-[520px] lg:min-h-[560px] bg-gradient-to-br from-[#0B2538] via-[#071827] to-[#0B2538] rounded-[2rem] sm:rounded-[2.5rem] overflow-hidden shadow-2xl flex items-center border border-white/10">
-          
+        {/* HERO SECTION: DYNAMIC LIVE VIDEO & PHOTO SHOWCASE BANNER */}
+        <section 
+          onMouseEnter={() => setHeroPaused(true)}
+          onMouseLeave={() => setHeroPaused(false)}
+          className="relative w-full min-h-[540px] lg:min-h-[580px] bg-gradient-to-br from-[#0B2538] via-[#071827] to-[#0B2538] rounded-[2rem] sm:rounded-[2.5rem] overflow-hidden shadow-2xl flex flex-col justify-between border border-white/10"
+        >
           {/* Subtle Ambient Glow */}
           <div className="absolute top-0 right-0 w-full h-full overflow-hidden pointer-events-none">
             <div className="absolute -top-[15%] -right-[10%] w-[600px] h-[600px] bg-[#D6AA55]/12 rounded-full blur-[100px]" />
             <div className="absolute bottom-[5%] right-[25%] w-[450px] h-[450px] bg-sky-500/10 rounded-full blur-[90px]" />
           </div>
 
-          <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 w-full h-full p-8 sm:p-12 lg:p-16 items-center gap-10">
-            
-            {/* Left Copy: Authentic Dexhaus Messaging */}
-            <div className="lg:col-span-7 flex flex-col items-start text-white max-w-xl">
-              <motion.div initial={{ opacity: 0, y: 25 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
-                
-                {/* Eyebrow Badge */}
-                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-[#D6AA55] text-[11px] font-bold tracking-widest uppercase mb-5 sm:mb-6">
-                  <Sparkles className="w-3.5 h-3.5" /> YOUR HOME SOLUTIONS DESTINATION
+          {/* Top Carousel Navigation & Indicators Bar */}
+          <div className="relative z-20 w-full px-6 sm:px-12 pt-6 sm:pt-8 flex items-center justify-between gap-4">
+            <div className="flex items-center gap-2">
+              {activeSlide.mediaType === 'video' ? (
+                <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-[#D6AA55]/20 border border-[#D6AA55]/40 text-[#D6AA55] text-[10px] font-bold tracking-wider uppercase">
+                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                  LIVE MOVING VIDEO
                 </div>
-
-                {/* Main Headline */}
-                <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold font-serif leading-[1.12] tracking-tight mb-5 text-white">
-                  One Destination.{' '}
-                  <span className="text-[#D6AA55] italic">Smarter Solutions</span>{' '}
-                  for Every Home.
-                </h1>
-
-                {/* Supporting Description */}
-                <p className="text-base sm:text-lg text-slate-200/95 mb-8 font-light leading-relaxed max-w-lg">
-                  Discover practical home solutions in one place. From kitchen organization and effortless cleaning to space-saving storage and everyday convenience, Dexhaus brings useful products together to make better living easier.
-                </p>
-
-                {/* CTA Buttons */}
-                <div className="flex flex-wrap items-center gap-4">
-                  <Link 
-                    href="#popular" 
-                    className="group inline-flex items-center gap-2.5 bg-[#F8F5ED] text-[#071827] px-7 py-3.5 rounded-full font-bold text-sm shadow-xl hover:bg-white hover:scale-[1.02] active:scale-[0.98] transition-all"
-                  >
-                    Explore Solutions <ArrowRight className="w-4 h-4 text-[#D6AA55] group-hover:translate-x-1 transition-transform" />
-                  </Link>
-
-                  <Link 
-                    href="#combos" 
-                    className="inline-flex items-center gap-2 px-6 py-3.5 rounded-full font-bold text-sm text-white border border-white/25 hover:bg-white/10 transition-colors"
-                  >
-                    View Problem Kits
-                  </Link>
+              ) : (
+                <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/15 text-white/80 text-[10px] font-bold tracking-wider uppercase">
+                  <Sparkles className="w-3 h-3 text-[#D6AA55]" />
+                  FEATURED SHOWCASE
                 </div>
-
-                {/* Benefit Row */}
-                <div className="mt-9 pt-6 border-t border-white/15 flex flex-wrap items-center gap-y-3 gap-x-5 text-xs text-slate-200/90 font-medium">
-                  <div className="flex items-center gap-2">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#D6AA55]" />
-                    <span>Practical Home Solutions</span>
-                  </div>
-                  <span className="text-white/20 hidden sm:inline">•</span>
-                  <div className="flex items-center gap-2">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#D6AA55]" />
-                    <span>Thoughtful Product Selection</span>
-                  </div>
-                  <span className="text-white/20 hidden sm:inline">•</span>
-                  <div className="flex items-center gap-2">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#D6AA55]" />
-                    <span>Clear, Transparent Pricing</span>
-                  </div>
-                </div>
-
-              </motion.div>
+              )}
             </div>
 
-            {/* Right Side: High-Resolution Real Lifestyle Media */}
-            <div className="lg:col-span-5 h-[340px] sm:h-[400px] lg:h-[480px] w-full relative flex items-center justify-center">
-              <motion.div 
-                initial={{ opacity: 0, scale: 0.96 }} 
-                animate={{ opacity: 1, scale: 1 }} 
-                transition={{ duration: 0.8, delay: 0.2 }}
-                className="relative w-full h-full rounded-[2rem] overflow-hidden shadow-2xl border border-white/15 bg-[#071827]"
-              >
-                {/* Smooth dark-navy gradient blending into the photograph */}
-                <div className="pointer-events-none absolute inset-y-0 left-0 w-28 bg-gradient-to-r from-[#071827]/80 via-[#071827]/30 to-transparent z-10 hidden lg:block" />
-
-                <Image 
-                  src="/hero-lifestyle.jpg" 
-                  alt="DEXHAUS Thoughtfully Organized Modern Indian Home Kitchen and Living Space" 
-                  fill 
-                  className="object-cover" 
-                  priority
-                  sizes="(max-width: 768px) 100vw, 45vw"
-                />
-
-                {/* Image overlay label */}
-                <div className="absolute bottom-5 left-5 right-5 sm:left-6 sm:right-auto sm:max-w-xs p-3.5 sm:p-4 rounded-2xl bg-[#071827]/85 backdrop-blur-md border border-[#D6AA55]/30 text-white flex items-center gap-3.5 shadow-2xl z-20">
-                  <div className="w-9 h-9 rounded-xl bg-[#0B2538] border border-[#D6AA55]/30 flex items-center justify-center flex-shrink-0 text-[#D6AA55]">
-                    <Home className="w-4 h-4" />
-                  </div>
-                  <div>
-                    <span className="text-[10px] text-[#D6AA55] font-bold uppercase tracking-widest block">
-                      THOUGHTFUL LIVING
-                    </span>
-                    <p className="text-xs text-slate-200/90 font-light mt-0.5">
-                      Practical solutions for everyday homes.
-                    </p>
-                  </div>
+            {/* Slide Indicators & Navigation Controls */}
+            {heroSlides.length > 1 && (
+              <div className="flex items-center gap-3">
+                <div className="flex items-center gap-1.5 bg-black/30 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/10">
+                  {heroSlides.map((slide, idx) => (
+                    <button
+                      key={slide.id || idx}
+                      onClick={() => setCurrentHeroSlide(idx)}
+                      className={`h-2 transition-all rounded-full ${
+                        currentHeroSlide === idx 
+                          ? 'w-7 bg-[#D6AA55]' 
+                          : 'w-2 bg-white/30 hover:bg-white/60'
+                      }`}
+                      title={slide.title}
+                      aria-label={`Slide ${idx + 1}`}
+                    />
+                  ))}
+                  <span className="text-[10px] font-mono text-white/70 ml-1.5 select-none">
+                    0{currentHeroSlide + 1} / 0{heroSlides.length}
+                  </span>
                 </div>
-              </motion.div>
+
+                <div className="flex items-center gap-1.5">
+                  <button 
+                    onClick={prevHeroSlide}
+                    className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 border border-white/15 flex items-center justify-center text-white transition-all hover:scale-105 active:scale-95"
+                    aria-label="Previous Slide"
+                  >
+                    <ChevronLeft className="w-4 h-4" />
+                  </button>
+                  <button 
+                    onClick={nextHeroSlide}
+                    className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 border border-white/15 flex items-center justify-center text-white transition-all hover:scale-105 active:scale-95"
+                    aria-label="Next Slide"
+                  >
+                    <ChevronRight className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Main Hero Content Grid */}
+          <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 w-full h-full px-6 sm:px-12 lg:px-16 py-6 sm:py-8 items-center gap-8 sm:gap-10">
+            
+            {/* Left Copy: Dynamic Product/Slide Messaging */}
+            <div className="lg:col-span-7 flex flex-col items-start text-white max-w-xl">
+              <AnimatePresence mode="wait">
+                <motion.div 
+                  key={activeSlide.id || currentHeroSlide}
+                  initial={{ opacity: 0, y: 15 }} 
+                  animate={{ opacity: 1, y: 0 }} 
+                  exit={{ opacity: 0, y: -15 }}
+                  transition={{ duration: 0.4 }}
+                  className="w-full"
+                >
+                  {/* Eyebrow Badge */}
+                  <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-[#D6AA55] text-[11px] font-bold tracking-widest uppercase mb-4 sm:mb-5">
+                    <Sparkles className="w-3.5 h-3.5" /> {activeSlide.badgeText || "YOUR HOME SOLUTIONS DESTINATION"}
+                  </div>
+
+                  {/* Main Headline */}
+                  <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold font-serif leading-[1.15] tracking-tight mb-4 text-white">
+                    {activeSlide.title}{' '}
+                    {activeSlide.highlightText && (
+                      <span className="text-[#D6AA55] italic block sm:inline">
+                        {activeSlide.highlightText}
+                      </span>
+                    )}
+                  </h1>
+
+                  {/* Supporting Description */}
+                  <p className="text-sm sm:text-base text-slate-200/95 mb-7 font-light leading-relaxed max-w-lg line-clamp-3 sm:line-clamp-none">
+                    {activeSlide.subtitle}
+                  </p>
+
+                  {/* CTA Buttons with Direct Redirect Link */}
+                  <div className="flex flex-wrap items-center gap-3.5">
+                    <Link 
+                      href={activeSlide.redirectUrl || "#popular"} 
+                      className="group inline-flex items-center gap-2.5 bg-[#F8F5ED] text-[#071827] px-7 py-3.5 rounded-full font-bold text-sm shadow-xl hover:bg-white hover:scale-[1.02] active:scale-[0.98] transition-all"
+                    >
+                      {activeSlide.ctaText || "Explore Solution"} <ArrowRight className="w-4 h-4 text-[#D6AA55] group-hover:translate-x-1 transition-transform" />
+                    </Link>
+
+                    <Link 
+                      href="#popular" 
+                      className="inline-flex items-center gap-2 px-6 py-3.5 rounded-full font-bold text-sm text-white border border-white/25 hover:bg-white/10 transition-colors"
+                    >
+                      Browse Catalog
+                    </Link>
+                  </div>
+
+                  {/* Benefit Row */}
+                  <div className="mt-8 pt-5 border-t border-white/15 flex flex-wrap items-center gap-y-2 gap-x-5 text-xs text-slate-200/90 font-medium">
+                    <div className="flex items-center gap-2">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#D6AA55]" />
+                      <span>Direct Product Redirect</span>
+                    </div>
+                    <span className="text-white/20 hidden sm:inline">•</span>
+                    <div className="flex items-center gap-2">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#D6AA55]" />
+                      <span>Authentic Tested Solutions</span>
+                    </div>
+                    <span className="text-white/20 hidden sm:inline">•</span>
+                    <div className="flex items-center gap-2">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#D6AA55]" />
+                      <span>Free Delivery Over ₹999</span>
+                    </div>
+                  </div>
+
+                </motion.div>
+              </AnimatePresence>
+            </div>
+
+            {/* Right Side: Interactive Moving Video / Photo Poster with Clickable Redirect */}
+            <div className="lg:col-span-5 h-[340px] sm:h-[390px] lg:h-[460px] w-full relative flex items-center justify-center">
+              <Link
+                href={activeSlide.redirectUrl || "#popular"}
+                className="group/poster relative w-full h-full rounded-[2rem] overflow-hidden shadow-2xl border border-white/15 bg-[#071827] block cursor-pointer"
+                title={`Click to view: ${activeSlide.title}`}
+              >
+                <AnimatePresence mode="wait">
+                  <motion.div 
+                    key={activeSlide.id || currentHeroSlide}
+                    initial={{ opacity: 0, scale: 0.96 }} 
+                    animate={{ opacity: 1, scale: 1 }} 
+                    exit={{ opacity: 0, scale: 1.02 }}
+                    transition={{ duration: 0.5 }}
+                    className="relative w-full h-full"
+                  >
+                    {/* Visual Media (Live Looping Video or Image) */}
+                    {activeSlide.mediaType === 'video' ? (
+                      <video 
+                        key={activeSlide.videoUrl}
+                        src={activeSlide.videoUrl} 
+                        autoPlay 
+                        loop 
+                        muted 
+                        playsInline 
+                        className="w-full h-full object-cover group-hover/poster:scale-105 transition-transform duration-700" 
+                      />
+                    ) : (
+                      <Image 
+                        key={activeSlide.imageUrl}
+                        src={activeSlide.imageUrl} 
+                        alt={activeSlide.title} 
+                        fill 
+                        className="object-cover group-hover/poster:scale-105 transition-transform duration-700" 
+                        priority
+                        sizes="(max-width: 768px) 100vw, 45vw"
+                      />
+                    )}
+
+                    {/* Gradient shading */}
+                    <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#071827]/90 via-[#071827]/25 to-transparent z-10" />
+
+                    {/* Interactive Poster Banner Pill */}
+                    <div className="absolute bottom-4 left-4 right-4 sm:bottom-5 sm:left-5 sm:right-5 p-3.5 rounded-2xl bg-[#071827]/85 backdrop-blur-md border border-[#D6AA55]/30 text-white flex items-center justify-between gap-3 shadow-2xl z-20 group-hover/poster:border-[#D6AA55] transition-colors">
+                      <div className="flex items-center gap-3 min-w-0">
+                        <div className="w-9 h-9 rounded-xl bg-[#0B2538] border border-[#D6AA55]/30 flex items-center justify-center flex-shrink-0 text-[#D6AA55]">
+                          {activeSlide.mediaType === 'video' ? (
+                            <Play className="w-4 h-4 fill-current" />
+                          ) : (
+                            <Home className="w-4 h-4" />
+                          )}
+                        </div>
+                        <div className="min-w-0">
+                          <span className="text-[9px] text-[#D6AA55] font-bold uppercase tracking-widest block truncate">
+                            {activeSlide.badgeText || "FEATURED PRODUCT"}
+                          </span>
+                          <p className="text-xs text-slate-200/90 font-medium mt-0.5 truncate">
+                            {activeSlide.title}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-1.5 text-xs font-bold text-[#D6AA55] flex-shrink-0 group-hover/poster:translate-x-1 transition-transform">
+                        <span>Shop Now</span>
+                        <ArrowRight className="w-3.5 h-3.5" />
+                      </div>
+                    </div>
+                  </motion.div>
+                </AnimatePresence>
+              </Link>
             </div>
 
           </div>
+
+          <div className="h-2 w-full bg-transparent" />
         </section>
 
         {/* 7 BRAND SOLUTION CATEGORIES */}
