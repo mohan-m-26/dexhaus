@@ -75,16 +75,19 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       >
         {/* Brand Header */}
         <div className="h-20 flex flex-col justify-center px-6 border-b border-slate-200 dark:border-slate-800 bg-[#102F43] text-white">
-          <Link href="/admin" className="flex flex-col">
+          <Link href="/admin" className="flex items-center gap-2.5">
             <Image 
-              src="/Dexhaus_logo.png" 
+              src="/Dexhaus_icon_transparent.png" 
               alt="DEXHAUS" 
-              width={140} 
+              width={32} 
               height={32} 
-              className="h-6 w-auto invert mb-1" 
+              className="w-8 h-8 object-contain invert" 
               priority
             />
-            <span className="text-[9px] font-bold tracking-widest text-[#C9A45C] uppercase">Admin Control Room</span>
+            <div className="flex flex-col">
+              <span className="font-serif font-black tracking-widest text-lg text-white leading-none">DEXHAUS</span>
+              <span className="text-[9px] font-bold tracking-widest text-[#C9A45C] uppercase mt-0.5">Admin Control</span>
+            </div>
           </Link>
         </div>
 

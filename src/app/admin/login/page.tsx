@@ -54,18 +54,23 @@ export default function AdminLogin() {
 
         {/* Top Header */}
         <div className="relative z-10">
-          <Link href="/" className="inline-block transition-transform hover:scale-105">
-            <Image 
-              src="/Dexhaus_logo.png" 
-              alt="DEXHAUS" 
-              width={180} 
-              height={40} 
-              className="h-9 w-auto invert mb-1" 
-              priority
-            />
-            <span className="block text-[10px] tracking-[0.25em] text-[#C9A45C] font-bold uppercase">
-              Smart Solutions. Better Living.
-            </span>
+          <Link href="/" className="inline-flex items-center gap-3 transition-transform hover:scale-105">
+            <div className="relative w-10 h-10 flex-shrink-0">
+              <Image 
+                src="/Dexhaus_icon_transparent.png" 
+                alt="DEXHAUS" 
+                width={40} 
+                height={40} 
+                className="w-full h-full object-contain invert" 
+                priority
+              />
+            </div>
+            <div className="flex flex-col">
+              <span className="font-serif font-black tracking-widest text-2xl text-white leading-none">DEXHAUS</span>
+              <span className="block text-[9px] tracking-[0.25em] text-[#C9A45C] font-bold uppercase mt-1">
+                Smart Solutions. Better Living.
+              </span>
+            </div>
           </Link>
         </div>
 
@@ -103,14 +108,15 @@ export default function AdminLogin() {
         
         {/* Top Bar */}
         <div className="flex justify-between items-center p-8 relative z-10">
-          <div className="lg:hidden block">
+          <div className="lg:hidden flex items-center gap-2">
             <Image 
-              src="/Dexhaus_logo.png" 
+              src="/Dexhaus_icon_transparent.png" 
               alt="DEXHAUS" 
-              width={140} 
-              height={32} 
-              className="h-7 w-auto dark:invert" 
+              width={28} 
+              height={28} 
+              className="w-7 h-7 object-contain" 
             />
+            <span className="font-serif font-black tracking-wider text-xl text-[#102F43] dark:text-white">DEXHAUS</span>
           </div>
           <Link 
             href="/" 
